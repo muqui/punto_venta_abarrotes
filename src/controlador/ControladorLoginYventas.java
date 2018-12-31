@@ -113,6 +113,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         login.jButtonAceptar.addActionListener(this);
         jdialogVentaFinal.Cobrar.addActionListener(this);
         this.vistaPrincipal.jButtonVentas.addActionListener(this);
+        this.vistaPrincipal.jButtonCerrarSession.addActionListener(this);
         this.jpanelVentas.jButtonAgregarProducto.addActionListener(this);
         this.jpanelVentas.jButtonCobrar.addActionListener(this);
         this.jpanelVentas.jButtonBuscar.addActionListener(this);
@@ -164,6 +165,15 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        /*
+        *
+        *Cerrar session
+        *
+        */
+        if(e.getSource() == vistaPrincipal.jButtonCerrarSession){
+            System.out.println("sout");
+        start();
+        }
         if(e.getSource() == vistaPrincipal.jButtonSalir){
             try {
                 
@@ -281,6 +291,10 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
                 login.setVisible(false);
                 vistaPrincipal.jToolBar1.setVisible(true);
                 vistaPrincipal.usuario = usuario;
+                vistaPrincipal.jLabelTitulo.setText("Usuario: "+login.jTextFieldUsuario.getText());
+                
+                login.jTextFieldUsuario.setText("");
+                login.jPasswordFieldPass.setText("");              
                 startVentas();
                 t();
             }
