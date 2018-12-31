@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e7957657-6b3b-4a88-a690-61b1b7f0ae21">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="customerID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     formadepago.`idPago` AS formadepago_idPago,
+     formadepago.`tventa_idVenta` AS formadepago_tventa_idVenta,
+     formadepago.`tipo` AS formadepago_tipo,
+     formadepago.`cantidad` AS formadepago_cantidad,
+     formadepago.`referencia` AS formadepago_referencia
+FROM
+     `formadepago` formadepago
+where
+formadepago.`tventa_idVenta`= $P{customerID}]]>
+	</queryString>
+	<field name="formadepago_idPago" class="java.lang.Integer"/>
+	<field name="formadepago_tventa_idVenta" class="java.lang.Integer"/>
+	<field name="formadepago_tipo" class="java.lang.String"/>
+	<field name="formadepago_cantidad" class="java.math.BigDecimal"/>
+	<field name="formadepago_referencia" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="328" y="0" width="100" height="20" uuid="5e61e368-f51f-4363-a717-756425561c47"/>
+				<textFieldExpression><![CDATA[$F{formadepago_tipo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="432" y="-1" width="100" height="20" uuid="7fb65c03-c43d-4661-97bf-5ae5f73140f7"/>
+				<textFieldExpression><![CDATA[$F{formadepago_cantidad}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

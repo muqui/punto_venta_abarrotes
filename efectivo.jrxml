@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="164" pageHeight="842" columnWidth="148" leftMargin="5" rightMargin="11" topMargin="8" bottomMargin="8" uuid="c475b9aa-7700-461b-b34d-0f0bd3a269f0">
+	<property name="ireport.zoom" value="6.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="672"/>
+	<parameter name="customerID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     tventa.`idVenta` AS tventa_idVenta,
+     tventa.`precioVentaTotal` AS tventa_precioVentaTotal,
+     tventa.`fechaRegistro` AS tventa_fechaRegistro,
+     tventa.`usuario_id` AS tventa_usuario_id,
+     tventadetalle.`idVentaDetalle` AS tventadetalle_idVentaDetalle,
+     tventadetalle.`idVenta` AS tventadetalle_idVenta,
+     tventadetalle.`idProducto` AS tventadetalle_idProducto,
+     tventadetalle.`codigoBarrasProducto` AS tventadetalle_codigoBarrasProducto,
+     tventadetalle.`nombreProducto` AS tventadetalle_nombreProducto,
+     tventadetalle.`precioVentaUnitarioProducto` AS tventadetalle_precioVentaUnitarioProducto,
+     tventadetalle.`cantidad` AS tventadetalle_cantidad,
+     tventadetalle.`totalPrecioVenta` AS tventadetalle_totalPrecioVenta,
+     tventadetalle.`precioProveedor` AS tventadetalle_precioProveedor,
+     usuario.`id` AS usuario_id,
+     usuario.`nivel` AS usuario_nivel,
+     usuario.`nombre` AS usuario_nombre,
+     usuario.`password` AS usuario_password,
+     formadepago.`idPago` AS formadepago_idPago,
+     formadepago.`tventa_idVenta` AS formadepago_tventa_idVenta,
+     formadepago.`tipo` AS formadepago_tipo,
+     formadepago.`cantidad` AS formadepago_cantidad,
+     formadepago.`referencia` AS formadepago_referencia
+FROM
+     `tventa` tventa INNER JOIN `tventadetalle` tventadetalle ON tventa.`idVenta` = tventadetalle.`idVenta`
+     INNER JOIN `usuario` usuario ON tventa.`usuario_id` = usuario.`id`
+     INNER JOIN `formadepago` formadepago ON tventa.`idVenta` = formadepago.`tventa_idVenta`
+WHERE
+     tventa.`idVenta` = $P{customerID}]]>
+	</queryString>
+	<field name="tventa_idVenta" class="java.lang.Integer"/>
+	<field name="tventa_precioVentaTotal" class="java.math.BigDecimal"/>
+	<field name="tventa_fechaRegistro" class="java.sql.Timestamp"/>
+	<field name="tventa_usuario_id" class="java.lang.Integer"/>
+	<field name="tventadetalle_idVenta" class="java.lang.Integer"/>
+	<field name="tventadetalle_idProducto" class="java.lang.Integer"/>
+	<field name="tventadetalle_codigoBarrasProducto" class="java.lang.String"/>
+	<field name="tventadetalle_nombreProducto" class="java.lang.String"/>
+	<field name="tventadetalle_precioVentaUnitarioProducto" class="java.math.BigDecimal"/>
+	<field name="tventadetalle_cantidad" class="java.math.BigDecimal"/>
+	<field name="tventadetalle_totalPrecioVenta" class="java.math.BigDecimal"/>
+	<field name="tventadetalle_precioProveedor" class="java.math.BigDecimal"/>
+	<field name="usuario_id" class="java.lang.Integer"/>
+	<field name="usuario_nivel" class="java.lang.Integer"/>
+	<field name="usuario_nombre" class="java.lang.String"/>
+	<field name="usuario_password" class="java.lang.String"/>
+	<field name="formadepago_idPago" class="java.lang.Integer"/>
+	<field name="formadepago_tventa_idVenta" class="java.lang.Integer"/>
+	<field name="formadepago_tipo" class="java.lang.String"/>
+	<field name="formadepago_cantidad" class="java.math.BigDecimal"/>
+	<field name="formadepago_referencia" class="java.lang.String"/>
+	<field name="tventadetalle_idVentaDetalle" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="92" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="125" height="20" uuid="c6983b77-cfb8-45e7-85e4-ea1806e6ad61"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Abarrotes]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="20" width="125" height="20" uuid="3f4071c6-d1dd-48c1-94fc-47a7d24eba99"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CAJERO: " +$F{usuario_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="40" width="125" height="20" uuid="95be06ef-c6ae-4b45-ad75-dbbf655c7ed4"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["FOLIO: "+$F{tventa_idVenta}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="52" y="60" width="73" height="13" uuid="83bf83c5-aeec-4997-a1ed-716c01a02f47"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[ DESCRIPCIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="78" y="73" width="47" height="19" uuid="a330c130-32ed-47a7-82bb-53a16f89e9e2"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[IMPORTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="52" height="13" uuid="8ab9f47b-e294-49c9-a232-836a807e3cbc"/>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="59" width="125" height="1" uuid="24f9d26f-a967-4f1c-9deb-68d596297b4b"/>
+				<graphicElement>
+					<pen lineWidth="3.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="90" width="125" height="1" uuid="ec257f0d-de4d-48c1-a73d-dbae3ddc963b"/>
+				<graphicElement>
+					<pen lineWidth="3.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+		</band>
+	</title>
+	<detail>
+		<band height="39" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="37" height="20" uuid="b3d14be2-9d42-4bf4-9490-d6a0dd9ad0e1"/>
+				<textFieldExpression><![CDATA[$F{tventadetalle_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="37" y="0" width="88" height="20" uuid="6253ceba-431b-4aad-be06-881074d424a9"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{tventadetalle_nombreProducto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="20" width="125" height="18" uuid="30481bcf-3890-490b-9749-24948c07c7c8"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{tventadetalle_precioVentaUnitarioProducto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<textField>
+				<reportElement x="48" y="3" width="77" height="14" uuid="3860ca8f-7a62-4d60-8f4a-5d68dc59a6ac"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total " + $F{tventa_precioVentaTotal}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="1" width="125" height="1" uuid="547bc3bf-fa6e-4376-8e1f-2fe5847765fa"/>
+				<graphicElement>
+					<pen lineWidth="3.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

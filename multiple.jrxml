@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="164" pageHeight="842" columnWidth="124" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f84539cd-bfb3-4c6a-a3e0-491a9540adf2">
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="92"/>
+	<parameter name="customerID" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\Punto de Venta\\PuntoVenta0.1\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     tventa.`idVenta` AS tventa_idVenta,
+     tventa.`precioVentaTotal` AS tventa_precioVentaTotal,
+     tventa.`fechaRegistro` AS tventa_fechaRegistro,
+     tventa.`usuario_id` AS tventa_usuario_id,
+     tventadetalle.`idVentaDetalle` AS tventadetalle_idVentaDetalle,
+     tventadetalle.`idVenta` AS tventadetalle_idVenta,
+     tventadetalle.`idProducto` AS tventadetalle_idProducto,
+     tventadetalle.`codigoBarrasProducto` AS tventadetalle_codigoBarrasProducto,
+     tventadetalle.`nombreProducto` AS tventadetalle_nombreProducto,
+     tventadetalle.`precioVentaUnitarioProducto` AS tventadetalle_precioVentaUnitarioProducto,
+     tventadetalle.`cantidad` AS tventadetalle_cantidad,
+     tventadetalle.`totalPrecioVenta` AS tventadetalle_totalPrecioVenta,
+     tventadetalle.`precioProveedor` AS tventadetalle_precioProveedor,
+     usuario.`id` AS usuario_id,
+     usuario.`nombre` AS usuario_nombre
+FROM
+     `tventa` tventa INNER JOIN `tventadetalle` tventadetalle ON tventa.`idVenta` = tventadetalle.`idVenta`
+     INNER JOIN `usuario` usuario ON tventa.`usuario_id` = usuario.`id`
+where
+tventa.`idVenta` = $P{customerID}]]>
+	</queryString>
+	<field name="tventa_idVenta" class="java.lang.Integer"/>
+	<field name="tventa_precioVentaTotal" class="java.math.BigDecimal"/>
+	<field name="tventa_fechaRegistro" class="java.sql.Timestamp"/>
+	<field name="tventa_usuario_id" class="java.lang.Integer"/>
+	<field name="tventadetalle_idVentaDetalle" class="java.lang.Integer"/>
+	<field name="tventadetalle_idVenta" class="java.lang.Integer"/>
+	<field name="tventadetalle_idProducto" class="java.lang.Integer"/>
+	<field name="tventadetalle_codigoBarrasProducto" class="java.lang.String"/>
+	<field name="tventadetalle_nombreProducto" class="java.lang.String"/>
+	<field name="tventadetalle_precioVentaUnitarioProducto" class="java.math.BigDecimal"/>
+	<field name="tventadetalle_cantidad" class="java.math.BigDecimal"/>
+	<field name="tventadetalle_totalPrecioVenta" class="java.math.BigDecimal"/>
+	<field name="tventadetalle_precioProveedor" class="java.math.BigDecimal"/>
+	<field name="usuario_id" class="java.lang.Integer"/>
+	<field name="usuario_nombre" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="22">
+			<staticText>
+				<reportElement x="0" y="0" width="124" height="20" uuid="9d777e98-fc2b-4108-a754-1675c5b66dac"/>
+				<text><![CDATA[ALBERTO CORONA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="29" splitType="Stretch">
+			<textField>
+				<reportElement x="11" y="0" width="100" height="20" uuid="e3a83829-b95f-452b-a613-faf972bb223a"/>
+				<textFieldExpression><![CDATA[$F{tventadetalle_nombreProducto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="50">
+			<subreport>
+				<reportElement x="0" y="0" width="124" height="50" uuid="d6ab3a1c-d9b0-48d3-88f8-09588327aaf6"/>
+				<subreportParameter name="customerID">
+					<subreportParameterExpression><![CDATA[$P{customerID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "formaPago.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>
