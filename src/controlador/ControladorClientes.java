@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import modelo.Cliente;
 import vista.JpanelClientes;
 import vista.JpanelProductos;
@@ -45,7 +46,12 @@ public class ControladorClientes implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == vistaPrincipal.jButtonClientes ) {
-            show();
+            if(vistaPrincipal.usuario.getNivel() == 0){
+                 show();
+            }
+           else{
+                JOptionPane.showMessageDialog(null, "No tienes los permisos para acceder", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+            }
         }
         if (e.getSource() == jpanelClienteNuevo.jButtonGuardar) {
             guardarCliente();

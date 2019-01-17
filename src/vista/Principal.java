@@ -62,6 +62,7 @@ public class Principal extends javax.swing.JFrame {
         jButtonClientes = new javax.swing.JButton();
         jButtonConfiguracion = new javax.swing.JButton();
         jButtonReporte = new javax.swing.JButton();
+        jButtonMisVentas = new javax.swing.JButton();
         jButtonCerrarSession = new javax.swing.JButton();
         jPanelPanelPrincipal = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -147,6 +148,17 @@ public class Principal extends javax.swing.JFrame {
         jButtonReporte.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButtonReporte);
 
+        jButtonMisVentas.setBackground(new java.awt.Color(255, 255, 255));
+        jButtonMisVentas.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButtonMisVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/mi_reporte24x24.png"))); // NOI18N
+        jButtonMisVentas.setText("Mis ventas");
+        jButtonMisVentas.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonMisVentas.setFocusable(false);
+        jButtonMisVentas.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        jButtonMisVentas.setMaximumSize(new java.awt.Dimension(180, 49));
+        jButtonMisVentas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButtonMisVentas);
+
         jButtonCerrarSession.setBackground(new java.awt.Color(255, 255, 255));
         jButtonCerrarSession.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jButtonCerrarSession.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cerrarSession24x24.jpg"))); // NOI18N
@@ -188,7 +200,7 @@ public class Principal extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1091, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 43, Short.MAX_VALUE))
+                                .addGap(0, 163, Short.MAX_VALUE))
                             .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanelPanelPrincipal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())
@@ -255,6 +267,7 @@ public class Principal extends javax.swing.JFrame {
     public javax.swing.JButton jButtonClientes;
     public javax.swing.JButton jButtonConfiguracion;
     public javax.swing.JButton jButtonInventario;
+    public javax.swing.JButton jButtonMisVentas;
     public javax.swing.JButton jButtonProductos;
     public javax.swing.JButton jButtonReporte;
     public javax.swing.JButton jButtonSalir;

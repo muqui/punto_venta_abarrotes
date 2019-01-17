@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Departamento;
 import modelo.Tventadetalle;
@@ -54,7 +55,12 @@ public class ControladorReportes implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == vistaPrincipal.jButtonReporte || e.getSource() == jpanelReportes.jButtonVentas) {
-            show();
+            if(vistaPrincipal.usuario.getNivel() == 0){
+                 show();
+            }
+           else{
+                JOptionPane.showMessageDialog(null, "No tienes los permisos para acceder", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+            }
         }
         if (e.getSource() == jPanelReporteVentas.jButtonBuscar) {
 

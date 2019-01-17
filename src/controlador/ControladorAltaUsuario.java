@@ -7,11 +7,13 @@ package controlador;
 
 import dao.UsuarioDao;
 import encryption.Encryption;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import modelo.Usuario;
 import vista.JPanelConfiguracion;
 import vista.Principal;
@@ -46,7 +48,13 @@ public class ControladorAltaUsuario implements ActionListener {
             
         }
         if (e.getSource() == vistaPrincipal.jButtonConfiguracion) {
-            show();
+           if(vistaPrincipal.usuario.getNivel() == 0){
+                 show();
+            }
+           else{
+              // UIManager.put("OptionPane.minimumSize",new Dimension(500,500)); 
+                JOptionPane.showMessageDialog(null, "No tienes los permisos para acceder.", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 

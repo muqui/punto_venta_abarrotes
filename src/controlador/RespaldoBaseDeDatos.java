@@ -12,12 +12,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author mq12
  */
-public class RespaldoBaseDeDatos {
+public class RespaldoBaseDeDatos extends Thread{
+    
+    @Override
+    public void run(){
+        try {
+            System.out.println("inicia respaldo ........................................");
+            GenerarBackupMySQL();
+        } catch (IOException ex) {
+            Logger.getLogger(RespaldoBaseDeDatos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void GenerarBackupMySQL() throws IOException {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd   HH-mm-ss");

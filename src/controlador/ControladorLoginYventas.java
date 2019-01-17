@@ -124,7 +124,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         this.jdialogVentaFinal.jTextFieldPagoCon.addKeyListener(this);
         this.jDialogVentaAgranel.jButtonAceptar.addActionListener(this);
         this.vistaPrincipal.jButtonSalir.addActionListener(this);
-       
+
         crearAdmin.jButtonCrear.addActionListener(this);
 
         tableModelVentas = new DefaultTableModel() {
@@ -169,28 +169,23 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         *
         *Cerrar session
         *
-        */
-        if(e.getSource() == vistaPrincipal.jButtonCerrarSession){
+         */
+        if (e.getSource() == vistaPrincipal.jButtonCerrarSession) {
             System.out.println("sout");
-        start();
+            start();
         }
-        if(e.getSource() == vistaPrincipal.jButtonSalir){
-            try {
-                
-                RespaldoBaseDeDatos respaldoBaseDeDatos = new RespaldoBaseDeDatos();
-                respaldoBaseDeDatos.GenerarBackupMySQL();
-                System.exit(0);
-            } catch (IOException ex) {
-                Logger.getLogger(ControladorLoginYventas.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        
+        if (e.getSource() == vistaPrincipal.jButtonSalir) {
+            Thread respaldo = new RespaldoBaseDeDatos();
+            respaldo.start();
+            System.exit(0);
+
         }
-        if(e.getSource() == jDialogVentaAgranel.jButtonAceptar){
-        ventaAgranel();
+        if (e.getSource() == jDialogVentaAgranel.jButtonAceptar) {
+            ventaAgranel();
         }
-         if(e.getSource() == jDialogVentaAgranel.jButtonCancelar){
-         jDialogVentaAgranel.setVisible(false);
-         }
+        if (e.getSource() == jDialogVentaAgranel.jButtonCancelar) {
+            jDialogVentaAgranel.setVisible(false);
+        }
         if (e.getSource() == jDialogMasDe1Producto.jButtonCancelar) {
             jDialogMasDe1Producto.setVisible(false);
         }
@@ -291,10 +286,10 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
                 login.setVisible(false);
                 vistaPrincipal.jToolBar1.setVisible(true);
                 vistaPrincipal.usuario = usuario;
-                vistaPrincipal.jLabelTitulo.setText("Usuario: "+login.jTextFieldUsuario.getText());
-                
+                vistaPrincipal.jLabelTitulo.setText("Usuario: " + login.jTextFieldUsuario.getText());
+
                 login.jTextFieldUsuario.setText("");
-                login.jPasswordFieldPass.setText("");              
+                login.jPasswordFieldPass.setText("");
                 startVentas();
                 t();
             }
@@ -428,7 +423,6 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
             Tventa v = ventaDao.getUltimoRegistro(idVenta);
             ventaDao.insertFormaPago(new Formadepago(v, "EFECTIVO", v.getPrecioVentaTotal(), ""));
             postVenta();
-         
 
         }
         if (formaPago == 1) { //PAGO CREDITO
@@ -556,7 +550,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
 
         }
         folio = String.valueOf(idVenta);
-          
+
     }
 
     public DefaultTableModel llenarTabla() {
@@ -569,7 +563,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
             }
         };
 
-        String[] columnNames = {"CODIGO", "NOMBRE","DEPARTAMENTO" ,"PRECIO", "CANTIDAD"};
+        String[] columnNames = {"CODIGO", "NOMBRE", "DEPARTAMENTO", "PRECIO", "CANTIDAD"};
         tableModel.setColumnIdentifiers(columnNames);
         Object[] fila = new Object[tableModel.getColumnCount()];
 
@@ -580,7 +574,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
             fila[2] = productos.get(i).getDepartamento().getNombre();
             fila[3] = productos.get(i).getPrecioVentaUnitario();
             fila[4] = productos.get(i).getCantidad();
-           // System.out.println("" + productos.get(i).getDepartamento().getNombre());
+            // System.out.println("" + productos.get(i).getDepartamento().getNombre());
             tableModel.addRow(fila);
 
         }
@@ -743,22 +737,22 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
 
         if (ke.getSource() == jDialogVentaAgranel.jTextFieldCantidad) {
             try {
-                 float cantidad = Float.parseFloat(jDialogVentaAgranel.jTextFieldCantidad.getText().trim());
-            importe = precioGranel;
-            importe = importe.multiply(new BigDecimal(cantidad));
-            importe = importe.setScale(2, BigDecimal.ROUND_HALF_UP);
+                float cantidad = Float.parseFloat(jDialogVentaAgranel.jTextFieldCantidad.getText().trim());
+                importe = precioGranel;
+                importe = importe.multiply(new BigDecimal(cantidad));
+                importe = importe.setScale(2, BigDecimal.ROUND_HALF_UP);
 
-            jDialogVentaAgranel.jTextFieldImporte.setText("" + importe);
+                jDialogVentaAgranel.jTextFieldImporte.setText("" + importe);
             } catch (Exception e) {
-                   jDialogVentaAgranel.jTextFieldImporte.setText("");
+                jDialogVentaAgranel.jTextFieldImporte.setText("");
             }
 
         }
-        if(ke.getSource() == jDialogVentaAgranel.jTextFieldImporte){
+        if (ke.getSource() == jDialogVentaAgranel.jTextFieldImporte) {
             try {
-                        BigDecimal importe = new BigDecimal(jDialogVentaAgranel.jTextFieldImporte.getText().trim());
-        BigDecimal cantidad =importe.divide(precioGranel,3, BigDecimal.ROUND_HALF_UP);
-         jDialogVentaAgranel.jTextFieldCantidad.setText("" + cantidad);
+                BigDecimal importe = new BigDecimal(jDialogVentaAgranel.jTextFieldImporte.getText().trim());
+                BigDecimal cantidad = importe.divide(precioGranel, 3, BigDecimal.ROUND_HALF_UP);
+                jDialogVentaAgranel.jTextFieldCantidad.setText("" + cantidad);
             } catch (Exception e) {
                 jDialogVentaAgranel.jTextFieldCantidad.setText("");
             }
@@ -901,31 +895,30 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
 
                 String nombre = (String) tableModelVentas.getValueAt(i, 1);
                 BigDecimal precioUnitario = (BigDecimal) tableModelVentas.getValueAt(i, 2);
-                
+
                 BigDecimal cantidad = (BigDecimal) tableModelVentas.getValueAt(i, 3);
                 BigDecimal PrecioProveedor = product.getPrecioProveedor().multiply(cantidad);
                 BigDecimal total = (BigDecimal) tableModelVentas.getValueAt(i, 4);
                 String comoSeVende = product.getComosevende();
-                
+
                 if (product.getComosevende().equals("Paquete")) {
-                   // System.out.println("modificar para vendeer paquete xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + product.getComosevende());
+                    // System.out.println("modificar para vendeer paquete xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + product.getComosevende());
                     for (ContenidoPaquete item : productoDao.getContnidoPaquteList(product.getIdProducto())) {
-                      
-                       
+
                         BigDecimal cant = item.getCantidad();
                         cant = cant.multiply(cantidad);
                         //BigDecimal cant = cantidad;
                         BigDecimal prec = item.getPrecioUnitario();
                         // BigDecimal precProveedor = cant.multiply(item.getTproducto().getPrecioProveedor());
                         Tproducto pro = productoDao.getByID(item.getTproducto().getIdProducto());
-                       // System.out.println("proveedoir lapicera " + pro);
+                        // System.out.println("proveedoir lapicera " + pro);
                         BigDecimal precProveedor = pro.getPrecioProveedor().multiply(cant);
                         BigDecimal ttotal = cant.multiply(prec);
                         //System.out.println("Item LOCOX" + precProveedor);
-                        listaVentaDetalle.add(new Tventadetalle(null, null, item.getTproducto().getCodigoBarras(), item.getTproducto().getNombre(), pro.getPrecioProveedor(), cant, ttotal, precProveedor, new BigDecimal("0.00"), new BigDecimal("0.00"),false,""));
+                        listaVentaDetalle.add(new Tventadetalle(null, null, item.getTproducto().getCodigoBarras(), item.getTproducto().getNombre(), pro.getPrecioProveedor(), cant, ttotal, precProveedor, new BigDecimal("0.00"), new BigDecimal("0.00"), false, ""));
                     }
                 }
-                listaVentaDetalle.add(new Tventadetalle(null, null, codigo, nombre, precioUnitario, cantidad, total, PrecioProveedor, new BigDecimal("0.00"), new BigDecimal("0.00"),true,comoSeVende));
+                listaVentaDetalle.add(new Tventadetalle(null, null, codigo, nombre, precioUnitario, cantidad, total, PrecioProveedor, new BigDecimal("0.00"), new BigDecimal("0.00"), true, comoSeVende));
 
                 calcularCostos1();
             } catch (Exception ex) {
@@ -937,21 +930,20 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         venta.setFechaRegistro(new Date());
         // venta.setFormaDePago("Efectivo"); CORREGIR TIPO PAGO
         idVenta = ventaDao.insert(venta);
-      //  System.out.println("idventa desde ek contolador " + idVenta);
-      //  System.out.println("lista ventas   xxxxxxxxxxxxxx: " + listaVentaDetalle);
+        //  System.out.println("idventa desde ek contolador " + idVenta);
+        //  System.out.println("lista ventas   xxxxxxxxxxxxxx: " + listaVentaDetalle);
         Tproducto producto1;
         ProductoDao1 productoDao1 = new ProductoDao1();
         for (Tventadetalle item : this.listaVentaDetalle) {
             try {
                 producto1 = productoDao1.getByCodigoBarras(item.getCodigoBarrasProducto());
-                
-                
+
                 System.out.println("CANTIDAD " + producto1.getCantidad() + "  INVENTARIO " + producto1.getInventariar() + " CANTIDAD A DESCONTAR " + item.getCantidad());
-               if(producto1.getInventariar()){
-                   producto1.setCantidad(producto1.getCantidad().subtract(item.getCantidad()));
-                   productoDao1.modificarProducto(producto1);
-               }
-               
+                if (producto1.getInventariar()) {
+                    producto1.setCantidad(producto1.getCantidad().subtract(item.getCantidad()));
+                    productoDao1.modificarProducto(producto1);
+                }
+
                 item.setTventa(ventaDao.getUltimoRegistro(idVenta));
                 item.setTproducto(producto1);
 
@@ -996,7 +988,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
 
     private void selectClienteMixto() {
         int selected = jDialogClientes.jTableCliente.getSelectedRow();
-       // System.out.println(" seleccion clientes " + selected);
+        // System.out.println(" seleccion clientes " + selected);
         if (selected >= 0) {
             jdialogVentaFinal.jTextFieldMixtoCreditoNombre.setText("" + jDialogClientes.jTableCliente.getValueAt(selected, 1));
             jdialogVentaFinal.jLabelMixtoIdCliente.setText("" + jDialogClientes.jTableCliente.getValueAt(selected, 0));
@@ -1043,12 +1035,10 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         }
     }
 
-
-
     private void ventaAgranel() {
         producto.setCantidad(new BigDecimal(jDialogVentaAgranel.jTextFieldCantidad.getText().trim()));
-                jDialogVentaAgranel.setVisible(false);
-                jDialogVentaAgranel.jTextFieldCantidad.setText("");
-                jDialogVentaAgranel.jTextFieldImporte.setText("");
+        jDialogVentaAgranel.setVisible(false);
+        jDialogVentaAgranel.jTextFieldCantidad.setText("");
+        jDialogVentaAgranel.jTextFieldImporte.setText("");
     }
 }

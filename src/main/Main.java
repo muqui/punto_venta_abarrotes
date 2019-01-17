@@ -14,6 +14,7 @@ import controlador.ControladorEliminarVenta;
 import controlador.ControladorIngresoEgreso;
 import controlador.ControladorInventario;
 import controlador.ControladorLoginYventas;
+import controlador.ControladorMisVentas;
 import controlador.ControladorMostrarEgresos;
 import controlador.ControladorMostrarIngresos;
 import controlador.ControladorProductos;
@@ -53,6 +54,7 @@ import vista.producto.JpanelProductoNuevo;
 import vista.reporte.JDialogEliminarEgreso;
 import vista.reporte.JDialogEliminarIngreso;
 import vista.reporte.JDialogEliminarVenta;
+import vista.reporte.JPanelMisVentas;
 import vista.reporte.JPanelReporteCompleto;
 import vista.reporte.JPanelReporteEgreso;
 import vista.reporte.JPanelReporteIngreso;
@@ -65,6 +67,8 @@ import vista.reporte.JPanelReporteVentas;
 public class Main {
 
     public static void main(String[] args) {
+        Thread respaldo = new RespaldoBaseDeDatos();
+        respaldo.start();
         //RESPALDO BASE DE DATOS
  //       RespaldoBaseDeDatos respaldoBaseDeDatos = new RespaldoBaseDeDatos();
 //        try {
@@ -109,7 +113,9 @@ public class Main {
         JDialogEliminarVenta JDialogEliminarVenta = new JDialogEliminarVenta(vistaPrincipal, true);
         JDialogEliminarEgreso jDialogEliminarEgreso = new JDialogEliminarEgreso(vistaPrincipal, true);
         JDialogEliminarIngreso jDialogEliminarIngreso = new JDialogEliminarIngreso(vistaPrincipal, true);
+        JPanelMisVentas jPanelMisVentas = new JPanelMisVentas(); 
         //Controlador
+        ControladorMisVentas controladorMisVentas = new ControladorMisVentas(vistaPrincipal, jPanelMisVentas);
         ControladorEliminarVenta controladorEliminarVenta = new ControladorEliminarVenta(vistaPrincipal, jpanelReportes, jPanelReporteVentas, JDialogEliminarVenta);
         ControladorReporteCompleto controladorReporteCompleto = new ControladorReporteCompleto(vistaPrincipal, jpanelReportes, jPanelReporteCompleto);
         ControladorMostrarEgresos controladorMostrarEgresos = new ControladorMostrarEgresos(vistaPrincipal, jpanelReportes, jPanelReporteEgreso, jDialogEngreso);
