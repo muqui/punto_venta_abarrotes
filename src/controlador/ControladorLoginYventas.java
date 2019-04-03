@@ -55,6 +55,7 @@ import vista.JDialogClientes;
 import vista.JDialogMasDe1Producto;
 import vista.JDialogVentaAgranel;
 import vista.JDialogVentaFinal;
+import vista.JPanelTicket;
 import vista.JpanelVentas;
 import vista.Login;
 import vista.Principal;
@@ -91,14 +92,15 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
     JDialogMasDe1Producto jDialogMasDe1Producto;
     JDialogVentaAgranel jDialogVentaAgranel;
     JDialogVentaFinal jdialogVentaFinal;
+    JPanelTicket jPanelTicket;
 
-    public ControladorLoginYventas(Principal vistaPrincipal, Login login, Usuario usuario, JpanelVentas jpanelVentas, CrearAdmin crearAdmin, JDialogBuscarProducto jDialogBuscarProducto, JDialogMasDe1Producto jDialogMasDe1Producto, JDialogVentaAgranel jDialogVentaAgranel, JDialogVentaFinal jdialogVentaFinal, JDialogClientes jDialogClientes) {
+    public ControladorLoginYventas(Principal vistaPrincipal, Login login, Usuario usuario, JpanelVentas jpanelVentas, CrearAdmin crearAdmin, JDialogBuscarProducto jDialogBuscarProducto, JDialogMasDe1Producto jDialogMasDe1Producto, JDialogVentaAgranel jDialogVentaAgranel, JDialogVentaFinal jdialogVentaFinal, JDialogClientes jDialogClientes, JPanelTicket jPanelTicket) {
         this.jDialogClientes = jDialogClientes;
         this.jdialogVentaFinal = jdialogVentaFinal;
         this.jDialogVentaAgranel = jDialogVentaAgranel;
         this.jDialogMasDe1Producto = jDialogMasDe1Producto;
         this.vistaPrincipal = vistaPrincipal;
-
+        this.jPanelTicket = jPanelTicket;
         this.login = login;
         this.usuario = usuario;
         this.jDialogBuscarProducto = jDialogBuscarProducto;
@@ -115,6 +117,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         this.vistaPrincipal.jButtonVentas.addActionListener(this);
         this.vistaPrincipal.jButtonCerrarSession.addActionListener(this);
         this.jpanelVentas.jButtonAgregarProducto.addActionListener(this);
+        this.jpanelVentas.jButtonCrearTicket.addActionListener(this);
         this.jpanelVentas.jButtonCobrar.addActionListener(this);
         this.jpanelVentas.jButtonBuscar.addActionListener(this);
         this.jDialogClientes.jButtonAceptar.addActionListener(this);
@@ -124,7 +127,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         this.jdialogVentaFinal.jTextFieldPagoCon.addKeyListener(this);
         this.jDialogVentaAgranel.jButtonAceptar.addActionListener(this);
         this.vistaPrincipal.jButtonSalir.addActionListener(this);
-
+         this.jpanelVentas.jTabbedPaneTickets.addTab("Ticket 1", new JPanelTicket());
         crearAdmin.jButtonCrear.addActionListener(this);
 
         tableModelVentas = new DefaultTableModel() {
@@ -138,15 +141,15 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         String[] columnNames = {"CODIGO", "NOMBRE", "PRECIO ", "CANTIDAD", "TOTAL"};
         tableModelVentas.setColumnIdentifiers(columnNames);
         teclado();
-        jpanelVentas.jTableVender.setModel(tableModelVentas);
+
+        // jpanelVentas.jTableVender.setModel(tableModelVentas); //se modifica al agregar tickets
         listaVentaDetalle = new ArrayList<>();
         clientes = new ArrayList<>();
-        // this.setEventoText(jInternalFrameVender.txtBuscar);
-//        setBuscarProducto(jDialogBuscarProducto.jTextFieldBuscar);
+
         productos = new ArrayList<>();
-        // createKeybindings(jDialogBuscarProducto.jTableProductos);
+
         jpanelVentas.jTextFieldCodigoBarras.addKeyListener(this);
-        jpanelVentas.jTableVender.addKeyListener(this);
+        // jpanelVentas.jTableVender.addKeyListener(this); //se modifica al agregar tickets
         this.jDialogMasDe1Producto.jTextFieldCantidad.addKeyListener(this);
         this.jDialogBuscarProducto.jTextFieldBuscar.addKeyListener(this);
         this.jDialogMasDe1Producto.jTextFieldCodigoBarras.addKeyListener(this);
@@ -175,10 +178,11 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
             start();
         }
         if (e.getSource() == vistaPrincipal.jButtonSalir) {
-            Thread respaldo = new RespaldoBaseDeDatos();
-            respaldo.start();
-            System.exit(0);
 
+            Thread respaldo = new RespaldoBaseDeDatos(true);
+            respaldo.start();
+            //System.out.println("estado hilo " + respaldo.);
+            //System.exit(0);
         }
         if (e.getSource() == jDialogVentaAgranel.jButtonAceptar) {
             ventaAgranel();
@@ -220,7 +224,9 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         }
         if (e.getSource() == jpanelVentas.jButtonBuscar) {
             jDialogBuscarProducto.setLocationRelativeTo(null);
+            jDialogBuscarProducto.jTextFieldBuscar.selectAll();
             jDialogBuscarProducto.setVisible(true);
+            System.out.println("SELLECIONAR TODO ");
 
         }
         if (e.getSource() == jpanelVentas.jButtonCobrar) {
@@ -237,7 +243,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         }
         if (e.getSource() == jpanelVentas.jButtonAgregarProducto) {
             agregarProductoAticket(jpanelVentas.jTextFieldCodigoBarras.getText().trim(), new BigDecimal("1"));
-            jpanelVentas.jTableVender.setRowSelectionInterval(0, 0);
+            //   jpanelVentas.jTableVender.setRowSelectionInterval(0, 0); //se modifica al agregar tickets
         }
         if (e.getSource() == login.jButtonCancelar) {
             System.exit(0);
@@ -254,6 +260,15 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
             } catch (Exception ex) {
                 Logger.getLogger(ControladorLoginYventas.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        /*
+        *
+        * Crea un nuevo ticket
+        *
+         */
+        if (e.getSource() == jpanelVentas.jButtonCrearTicket) {
+            this.jpanelVentas.jTabbedPaneTickets.addTab("Ticket 3", new JPanelTicket());
+
         }
     }
 
@@ -346,7 +361,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     agregarProductoAticket(jpanelVentas.jTextFieldCodigoBarras.getText().trim(), new BigDecimal("1"));
-                    jpanelVentas.jTableVender.setRowSelectionInterval(0, 0);
+                    //  jpanelVentas.jTableVender.setRowSelectionInterval(0, 0); //se modifica al agregar tickets
 
                 }
             }
@@ -389,7 +404,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
         total = total.setScale(1, BigDecimal.ROUND_HALF_UP);
         //System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxx total: " + total);
         tableModelVentas.addRow(new Object[]{producto.getCodigoBarras(), producto.getNombre(), producto.getPrecioVentaUnitario(), producto.getCantidad(), total});
-        jpanelVentas.jTableVender.setModel(tableModelVentas);
+        //  jpanelVentas.jTableVender.setModel(tableModelVentas); //se modifica al agregar tickets
 
     }
 
@@ -656,21 +671,25 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
             }
             if (ke.getKeyCode() == KeyEvent.VK_F1) {
                 jDialogBuscarProducto.setLocationRelativeTo(null);
+                jDialogBuscarProducto.jTextFieldBuscar.selectAll();
                 jDialogBuscarProducto.setVisible(true);
+
             }
             if (ke.getKeyCode() == KeyEvent.VK_F2) {
                 mostrarDialogMasDe1Producto();
             }
             if (ke.getKeyCode() == KeyEvent.VK_DELETE) {
-                System.out.println("pressed delete");
+                //se modifica al agregar tickets
+                /*     System.out.println("pressed delete");
                 int row = jpanelVentas.jTableVender.getSelectedRow();
                 System.out.println(" " + jpanelVentas.jTableVender.getValueAt(row, 0));
                 tableModelVentas.removeRow(row);
                 jpanelVentas.jTableVender.setModel(tableModelVentas);
                 jpanelVentas.jLabelTotal.setText("$ " + calcularCostos1());
-                jpanelVentas.jTableVender.setRowSelectionInterval(0, 0);
+                jpanelVentas.jTableVender.setRowSelectionInterval(0, 0);*/
 
             }
+            /*
             int rows = jpanelVentas.jTableVender.getRowCount();
             int selected = jpanelVentas.jTableVender.getSelectedRow();
             if (ke.getKeyCode() == KeyEvent.VK_UP) {
@@ -680,16 +699,17 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
                     jpanelVentas.jTableVender.setRowSelectionInterval(rows - 1, rows - 1);
                 }
             }
-
+             */
             if (ke.getKeyCode() == KeyEvent.VK_DOWN) {
-                System.out.println("presionaste tecla abajo total " + rows + " selected: " + selected);
-                // jDialogBuscarProducto.jTableProductos.setRowSelectionInterval((selected+1), 0);
+                //se modifica al agregar tickets
+                /*
+                System.out.println("presionaste tecla abajo total " + rows + " selected: " + selected);            
                 if (rows > (selected + 1)) {
                     jpanelVentas.jTableVender.setRowSelectionInterval(selected + 1, selected + 1);
                 } else {
                     jpanelVentas.jTableVender.setRowSelectionInterval(0, 0);
                 }
-
+                 */
             }
         }
     }
@@ -966,7 +986,7 @@ public class ControladorLoginYventas implements ActionListener, KeyListener {
             }
         }
 
-        jpanelVentas.jTableVender.setModel(tableModelVentas);
+//        jpanelVentas.jTableVender.setModel(tableModelVentas); //se modifica al agregar tickets
         jpanelVentas.jLabelTotal.setText("$ 0");
         jdialogVentaFinal.jTextFieldPagoCon.setText("");
         jdialogVentaFinal.jTextFieldSuCambio.setText("");

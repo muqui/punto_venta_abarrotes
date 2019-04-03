@@ -42,6 +42,7 @@ import vista.JDialogVentaFinal;
 import vista.JPanelConfiguracion;
 import vista.JPanelInventario;
 import vista.JPanelReportes;
+import vista.JPanelTicket;
 import vista.cliente.JpanelClienteNuevo;
 import vista.configuracion.JPanelAltaUsuario;
 import vista.inventario.JPanelInventariolista;
@@ -67,8 +68,9 @@ import vista.reporte.JPanelReporteVentas;
 public class Main {
 
     public static void main(String[] args) {
-        Thread respaldo = new RespaldoBaseDeDatos();
+        Thread respaldo = new RespaldoBaseDeDatos(false);
         respaldo.start();
+        System.out.println("estado hilo " + respaldo.getName());
         //RESPALDO BASE DE DATOS
  //       RespaldoBaseDeDatos respaldoBaseDeDatos = new RespaldoBaseDeDatos();
 //        try {
@@ -81,6 +83,7 @@ public class Main {
         Usuario usuario = new Usuario();
 
         //Vista
+        JPanelTicket jPanelTicket = new JPanelTicket();
         Principal vistaPrincipal = new Principal();
         JpanelClientes jpanelClientes = new JpanelClientes();
         JpanelVentas jpanelVentas = new JpanelVentas();
@@ -127,7 +130,7 @@ public class Main {
         ControladorClientes controladorClientes = new ControladorClientes(vistaPrincipal, jpanelClientes, jpanelClienteNuevo);
         ControladorProductos controladorProductos = new ControladorProductos(vistaPrincipal, jpanelProductos, jpanelProductoNuevo, jpanelContenidoPaquete);
         ControladorReportes controladorReportes = new ControladorReportes(vistaPrincipal, jpanelReportes, jPanelReporteVentas);
-        ControladorLoginYventas controladorLogin = new ControladorLoginYventas(vistaPrincipal, login, usuario, jpanelVentas, crearAdmin, jDialogBuscarProducto, jDialogMasDe1Producto, jDialogVentaAgranel, jdialogVentaFinal, jDialogClientes);
+        ControladorLoginYventas controladorLogin = new ControladorLoginYventas(vistaPrincipal, login, usuario, jpanelVentas, crearAdmin, jDialogBuscarProducto, jDialogMasDe1Producto, jDialogVentaAgranel, jdialogVentaFinal, jDialogClientes, jPanelTicket);
         ControladorProductosModificar controladorProductosModificar = new ControladorProductosModificar(vistaPrincipal, jpanelProductos, jpanelProductoModificar, jDialogBuscarProductoModificar, jDialogModificarPaquete);
         ControladorEliminarEgreso controladorEliminarEgreso = new ControladorEliminarEgreso(vistaPrincipal, jpanelReportes, jPanelReporteEgreso, jDialogEliminarEgreso);
          ControladorEliminarIngreso controladorEliminarIngreso = new ControladorEliminarIngreso(vistaPrincipal, jpanelReportes, jPanelReporteIngreso, jDialogEliminarIngreso);

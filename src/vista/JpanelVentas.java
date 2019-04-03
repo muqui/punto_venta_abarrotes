@@ -16,7 +16,7 @@ public class JpanelVentas extends javax.swing.JPanel {
      */
     public JpanelVentas() {
         initComponents();
-        jTableVender.getTableHeader().setReorderingAllowed(false);
+//        jTableVender.getTableHeader().setReorderingAllowed(false);
 
     }
 
@@ -35,12 +35,17 @@ public class JpanelVentas extends javax.swing.JPanel {
         jButtonBuscar = new javax.swing.JButton();
         jButtonInsertarMasD1 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTableVender = new javax.swing.JTable();
         jLabelTotal = new javax.swing.JLabel();
         jButtonCobrar = new javax.swing.JButton();
+        jTabbedPaneTickets = new javax.swing.JTabbedPane();
+        jButton3 = new javax.swing.JButton();
+        jButtonCrearTicket = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
+        setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
 
         jLabel2.setText("Codigo de barras");
 
@@ -54,29 +59,24 @@ public class JpanelVentas extends javax.swing.JPanel {
 
         jButton5.setText("suprimir - Borrar");
 
-        jTableVender.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jTableVender.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jTableVender.setGridColor(new java.awt.Color(255, 255, 255));
-        jTableVender.setShowHorizontalLines(false);
-        jTableVender.setShowVerticalLines(false);
-        jScrollPane1.setViewportView(jTableVender);
-
         jLabelTotal.setFont(new java.awt.Font("Arial", 1, 48)); // NOI18N
         jLabelTotal.setForeground(new java.awt.Color(23, 77, 244));
         jLabelTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabelTotal.setText("$ 0");
 
         jButtonCobrar.setText("F12 - Cobrar");
+
+        jTabbedPaneTickets.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+
+        jButton3.setText("F6  - cambiar ticket");
+
+        jButtonCrearTicket.setText("F5 -  crear ticket");
+
+        jButton1.setText("F7 - Eliminar ticket");
+
+        jButton4.setText("F3 - Mayoreo");
+
+        jButton2.setText("F4 - Verificador");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -92,19 +92,29 @@ public class JpanelVentas extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jTabbedPaneTickets)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButtonBuscar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonInsertarMasD1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonCobrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelTotal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jButtonCobrar, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButtonCrearTicket)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -120,12 +130,22 @@ public class JpanelVentas extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonBuscar)
                     .addComponent(jButtonInsertarMasD1)
-                    .addComponent(jButton5))
+                    .addComponent(jButton5)
+                    .addComponent(jButton4)
+                    .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPaneTickets, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonCrearTicket)
+                            .addComponent(jButton3)
+                            .addComponent(jButton1))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonCobrar)
                 .addContainerGap())
         );
@@ -133,15 +153,19 @@ public class JpanelVentas extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     public javax.swing.JButton jButtonAgregarProducto;
     public javax.swing.JButton jButtonBuscar;
     public javax.swing.JButton jButtonCobrar;
+    public javax.swing.JButton jButtonCrearTicket;
     public javax.swing.JButton jButtonInsertarMasD1;
     private javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabelTotal;
-    private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTable jTableVender;
+    public javax.swing.JTabbedPane jTabbedPaneTickets;
     public javax.swing.JTextField jTextFieldCodigoBarras;
     // End of variables declaration//GEN-END:variables
 }
