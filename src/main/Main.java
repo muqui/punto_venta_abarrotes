@@ -6,6 +6,7 @@
 package main;
 
 import controlador.ControlerLogin;
+import vista.JpanelVentas;
 import vista.Login;
 import vista.Principal;
 
@@ -20,8 +21,12 @@ public class Main {
         //VISTA
         Principal vistaPrincipal = new Principal();
         Login login = new Login(vistaPrincipal, true);
+         JpanelVentas jpanelVentas = new  JpanelVentas();
         //CONTROLADOR
-        ControlerLogin controllerLogin = new ControlerLogin(vistaPrincipal, login);
+        ControlerLogin controllerLogin = new ControlerLogin(vistaPrincipal, login, jpanelVentas);
+        
+        //iniciar la apliacion
+        controllerLogin.iniciar();
         
     }
 }
