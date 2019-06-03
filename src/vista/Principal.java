@@ -5,6 +5,7 @@
  */
 package vista;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.logging.Level;
@@ -26,7 +27,7 @@ public class Principal extends javax.swing.JFrame {
 
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-
+             
             initComponents();
            
                Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/logo.png"));

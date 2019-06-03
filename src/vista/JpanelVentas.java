@@ -5,6 +5,9 @@
  */
 package vista;
 
+import java.awt.Color;
+import javax.swing.UIManager;
+
 /**
  *
  * @author mq12
@@ -15,7 +18,9 @@ public class JpanelVentas extends javax.swing.JPanel {
      * Creates new form Ventas
      */
     public JpanelVentas() {
+      
         initComponents();
+        
 //        jTableVender.getTableHeader().setReorderingAllowed(false);
 
     }
@@ -38,9 +43,9 @@ public class JpanelVentas extends javax.swing.JPanel {
         jLabelTotal = new javax.swing.JLabel();
         jButtonCobrar = new javax.swing.JButton();
         jTabbedPaneTickets = new javax.swing.JTabbedPane();
-        jButton3 = new javax.swing.JButton();
+        jButtonCambiarTicket = new javax.swing.JButton();
         jButtonCrearTicket = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        jButtonEliminarTicket = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -66,13 +71,13 @@ public class JpanelVentas extends javax.swing.JPanel {
 
         jButtonCobrar.setText("F12 - Cobrar");
 
-        jTabbedPaneTickets.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jTabbedPaneTickets.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
 
-        jButton3.setText("F6  - cambiar ticket");
+        jButtonCambiarTicket.setText("F6  - cambiar ticket");
 
         jButtonCrearTicket.setText("F5 -  crear ticket");
 
-        jButton1.setText("F7 - Eliminar ticket");
+        jButtonEliminarTicket.setText("F7 - Eliminar ticket");
 
         jButton4.setText("F3 - Mayoreo");
 
@@ -110,9 +115,9 @@ public class JpanelVentas extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButtonCrearTicket)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3)
+                        .addComponent(jButtonCambiarTicket)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
+                        .addComponent(jButtonEliminarTicket)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -143,8 +148,8 @@ public class JpanelVentas extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButtonCrearTicket)
-                            .addComponent(jButton3)
-                            .addComponent(jButton1))))
+                            .addComponent(jButtonCambiarTicket)
+                            .addComponent(jButtonEliminarTicket))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonCobrar)
                 .addContainerGap())
@@ -153,15 +158,15 @@ public class JpanelVentas extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     public javax.swing.JButton jButtonAgregarProducto;
     public javax.swing.JButton jButtonBuscar;
+    public javax.swing.JButton jButtonCambiarTicket;
     public javax.swing.JButton jButtonCobrar;
     public javax.swing.JButton jButtonCrearTicket;
+    public javax.swing.JButton jButtonEliminarTicket;
     public javax.swing.JButton jButtonInsertarMasD1;
     private javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabelTotal;
