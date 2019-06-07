@@ -16,6 +16,7 @@ public class JPanelTicket extends javax.swing.JPanel {
      */
     public JPanelTicket() {
         initComponents();
+         jTableVender.getTableHeader().setReorderingAllowed(false);
     }
 
     /**
@@ -28,9 +29,9 @@ public class JPanelTicket extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableVender = new javax.swing.JTable();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableVender.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -41,7 +42,7 @@ public class JPanelTicket extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTableVender);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -58,6 +59,6 @@ public class JPanelTicket extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    public javax.swing.JTable jTableVender;
     // End of variables declaration//GEN-END:variables
 }

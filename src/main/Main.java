@@ -7,6 +7,8 @@ package main;
 
 import controlador.ControladorVender;
 import controlador.ControlerLogin;
+import vista.JDialogVentaAgranel;
+import vista.JPanelTicket;
 import vista.JpanelVentas;
 import vista.Login;
 import vista.Principal;
@@ -24,10 +26,12 @@ public class Main {
         Principal vistaPrincipal = new Principal();
         Login login = new Login(vistaPrincipal, true);
          JpanelVentas jpanelVentas = new  JpanelVentas();
+          JPanelTicket jPanelTicket = new JPanelTicket();
+          JDialogVentaAgranel jDialogVentaAgranel = new JDialogVentaAgranel(vistaPrincipal, true);
          
         //CONTROLADOR
         ControlerLogin controllerLogin = new ControlerLogin(vistaPrincipal, login, jpanelVentas);
-        ControladorVender controladorVender = new ControladorVender(vistaPrincipal, jpanelVentas);
+        ControladorVender controladorVender = new ControladorVender(vistaPrincipal, jpanelVentas, jPanelTicket, jDialogVentaAgranel);
         //iniciar la apliacion
         controllerLogin.iniciar();
         
