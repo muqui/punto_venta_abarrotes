@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -95,7 +96,7 @@ public class Tventa  implements java.io.Serializable {
         this.fechaRegistro = fechaRegistro;
     }
 
-@OneToMany(fetch=FetchType.LAZY, mappedBy="tventa")
+@OneToMany(fetch=FetchType.EAGER, mappedBy="tventa",  cascade = CascadeType.ALL)
     public Set<Tventadetalle> getTventadetalles() {
         return this.tventadetalles;
     }
@@ -104,7 +105,7 @@ public class Tventa  implements java.io.Serializable {
         this.tventadetalles = tventadetalles;
     }
 
-@OneToMany(fetch=FetchType.LAZY, mappedBy="tventa")
+@OneToMany(fetch=FetchType.LAZY, mappedBy="tventa", cascade = CascadeType.ALL)
     public Set<Formadepago> getFormadepagos() {
         return this.formadepagos;
     }

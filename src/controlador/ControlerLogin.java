@@ -40,13 +40,14 @@ public class ControlerLogin implements ActionListener {
         this.login.jButtonCancelar.addActionListener(this);
         this.vistaPrincipal.jButtonSalir.addActionListener(this);
         this.vistaPrincipal.jButtonCerrarSession.addActionListener(this);
+        this.vistaPrincipal.jButtonVentas.addActionListener(this);
     }
 
     public void iniciar() {
         vistaPrincipal.jLabelTitulo.setVisible(false);
         vistaPrincipal.jButtonSalir.setVisible(false);
         vistaPrincipal.jToolBar1.setVisible(false);
-         vistaPrincipal.jPanelPanelPrincipal.setVisible(false);
+        vistaPrincipal.jPanelPanelPrincipal.setVisible(false);
         vistaPrincipal.pack();
         vistaPrincipal.setSize(1, 1);
 
@@ -77,7 +78,8 @@ public class ControlerLogin implements ActionListener {
                 vistaPrincipal.jButtonSalir.setVisible(true);
                 vistaPrincipal.jToolBar1.setVisible(true);
                 vistaPrincipal.jPanelPanelPrincipal.setVisible(true);
-                vistaPrincipal.usuario = usuario;
+                this.vistaPrincipal.usuario = usuario;
+                System.out.println("usuario login : " + vistaPrincipal.usuario);
                 vistaPrincipal.jLabelTitulo.setText("Usuario: " + login.jTextFieldUsuario.getText());
                 vistaPrincipal.jPanelPanelPrincipal.removeAll();
                 vistaPrincipal.jPanelPanelPrincipal.setLayout(new java.awt.BorderLayout());
@@ -108,6 +110,13 @@ public class ControlerLogin implements ActionListener {
         }
         if (arg0.getSource() == vistaPrincipal.jButtonCerrarSession) {
             iniciar();
+        }
+        if (arg0.getSource() == vistaPrincipal.jButtonVentas) {
+            vistaPrincipal.jPanelPanelPrincipal.removeAll();
+            vistaPrincipal.jPanelPanelPrincipal.setLayout(new java.awt.BorderLayout());
+            vistaPrincipal.jPanelPanelPrincipal.add(jpanelVentas);
+            vistaPrincipal.jPanelPanelPrincipal.validate();
+            vistaPrincipal.jPanelPanelPrincipal.repaint();
         }
     }
 

@@ -20,6 +20,7 @@ public class JpanelVentas extends javax.swing.JPanel {
     public JpanelVentas() {
       
         initComponents();
+        jLabelMayoreio.setVisible(false);
         
 //        jTableVender.getTableHeader().setReorderingAllowed(false);
 
@@ -46,8 +47,9 @@ public class JpanelVentas extends javax.swing.JPanel {
         jButtonCambiarTicket = new javax.swing.JButton();
         jButtonCrearTicket = new javax.swing.JButton();
         jButtonEliminarTicket = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        jButtonMayoreo = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabelMayoreio = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -79,9 +81,15 @@ public class JpanelVentas extends javax.swing.JPanel {
 
         jButtonEliminarTicket.setText("F7 - Eliminar ticket");
 
-        jButton4.setText("F3 - Mayoreo");
+        jButtonMayoreo.setText("F3 - Mayoreo");
 
         jButton2.setText("F4 - Verificador");
+
+        jLabelMayoreio.setBackground(new java.awt.Color(0, 0, 255));
+        jLabelMayoreio.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabelMayoreio.setForeground(new java.awt.Color(255, 0, 51));
+        jLabelMayoreio.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelMayoreio.setText("jLabel1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -98,17 +106,6 @@ public class JpanelVentas extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTabbedPaneTickets)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonBuscar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonInsertarMasD1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonCobrar, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -119,7 +116,19 @@ public class JpanelVentas extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonEliminarTicket)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButtonBuscar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonInsertarMasD1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonMayoreo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton5)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jLabelMayoreio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -131,15 +140,17 @@ public class JpanelVentas extends javax.swing.JPanel {
                         .addComponent(jLabel2)
                         .addComponent(jTextFieldCodigoBarras, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButtonAgregarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelMayoreio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonBuscar)
                     .addComponent(jButtonInsertarMasD1)
                     .addComponent(jButton5)
-                    .addComponent(jButton4)
+                    .addComponent(jButtonMayoreo)
                     .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPaneTickets, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                .addComponent(jTabbedPaneTickets, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(8, 8, 8)
@@ -159,7 +170,6 @@ public class JpanelVentas extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     public javax.swing.JButton jButtonAgregarProducto;
     public javax.swing.JButton jButtonBuscar;
@@ -168,7 +178,9 @@ public class JpanelVentas extends javax.swing.JPanel {
     public javax.swing.JButton jButtonCrearTicket;
     public javax.swing.JButton jButtonEliminarTicket;
     public javax.swing.JButton jButtonInsertarMasD1;
+    public javax.swing.JButton jButtonMayoreo;
     private javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel jLabelMayoreio;
     public javax.swing.JLabel jLabelTotal;
     public javax.swing.JTabbedPane jTabbedPaneTickets;
     public javax.swing.JTextField jTextFieldCodigoBarras;
