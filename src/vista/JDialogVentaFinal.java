@@ -79,7 +79,7 @@ public class JDialogVentaFinal extends javax.swing.JDialog {
         jPanel7 = new javax.swing.JPanel();
         Cobrar = new javax.swing.JButton();
         jButtonImprimirCobrar = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jButtonCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -443,7 +443,7 @@ public class JDialogVentaFinal extends javax.swing.JDialog {
 
         jButtonImprimirCobrar.setText("F11 - Imprimir y cobrar");
 
-        jButton3.setText("ESC -Cancelar");
+        jButtonCancelar.setText("ESC -Cancelar");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -451,7 +451,7 @@ public class JDialogVentaFinal extends javax.swing.JDialog {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3)
+                .addComponent(jButtonCancelar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImprimirCobrar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -465,7 +465,7 @@ public class JDialogVentaFinal extends javax.swing.JDialog {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Cobrar)
                     .addComponent(jButtonImprimirCobrar)
-                    .addComponent(jButton3))
+                    .addComponent(jButtonCancelar))
                 .addContainerGap())
         );
 
@@ -536,7 +536,7 @@ public class JDialogVentaFinal extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton Cobrar;
-    private javax.swing.JButton jButton3;
+    public javax.swing.JButton jButtonCancelar;
     public javax.swing.JButton jButtonCliente;
     public javax.swing.JButton jButtonImprimirCobrar;
     private javax.swing.JLabel jLabel1;

@@ -6,6 +6,7 @@
 package controlador;
 
 import dao.ProductoDao;
+import dao.VerificarPrecioDao;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -13,12 +14,14 @@ import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Tproducto;
 import modelo.Usuario;
+import java.util.TimerTask;
 import modelo.VentasModelo;
 import vista.JDialogBuscarProducto;
 import vista.JDialogMasDe1Producto;
@@ -28,6 +31,10 @@ import vista.JDialogVerificadorPrecios;
 import vista.JPanelTicket;
 import vista.JpanelVentas;
 import vista.Principal;
+import java.util.TimerTask;
+import java.util.Timer;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -44,7 +51,7 @@ public class ControladorVender implements ActionListener, KeyListener {
     JDialogVerificadorPrecios jDialogVerificadorPrecios;
     ArrayList<JPanelTicket> jPanelTicketArray = new ArrayList<JPanelTicket>();
     ArrayList<DefaultTableModel> defaultTableModelArray = new ArrayList<DefaultTableModel>();
-    String[] columnNames = {"CODIGO", "NOMBRE", "PRECIO ", "CANTIDAD", "TOTAL"};
+    String[] columnNames = {"CODIGO", "NOMBRE", "PRECIO ", "CANTIDAD", "TOTAL", ""};
     JPanelTicket jPanelTicket;
     byte numeroDeTicket = 2;
     DefaultTableModel tableModelVentas;
@@ -53,6 +60,8 @@ public class ControladorVender implements ActionListener, KeyListener {
     boolean precioVentaMenudeo = true; //si es falso el precio es mayoreo.
     List<Tproducto> productos;
     ProductoDao productoDao;
+    Timer timer = new Timer();
+    BigDecimal total;
 
     public ControladorVender(Principal vistaPrincipal, JpanelVentas jpanelVentas, JPanelTicket jPanelTicket, JDialogVentaAgranel jDialogVentaAgranel, JDialogMasDe1Producto jDialogMasDe1Producto, JDialogVentaFinal jDialogVentaFinal, JDialogBuscarProducto jDialogBuscarProducto, JDialogVerificadorPrecios jDialogVerificadorPrecios) {
         this.jDialogVerificadorPrecios = jDialogVerificadorPrecios;
@@ -63,8 +72,8 @@ public class ControladorVender implements ActionListener, KeyListener {
         this.jDialogVentaAgranel = jDialogVentaAgranel;
         this.jDialogMasDe1Producto = jDialogMasDe1Producto;
         this.jDialogBuscarProducto = jDialogBuscarProducto;
-        System.out.println("Usuario " + this.vistaPrincipal.usuario.getNombre());
-        ventasModelo = new VentasModelo(this.jDialogVentaAgranel, this.jDialogVentaFinal, this.vistaPrincipal.usuario, this.jPanelTicket, this.jpanelVentas, this.jPanelTicketArray, this.defaultTableModelArray);
+
+        ventasModelo = new VentasModelo(this.jDialogVentaAgranel, this.jDialogVentaFinal, this.vistaPrincipal, this.jPanelTicket, this.jpanelVentas, this.jPanelTicketArray, this.defaultTableModelArray);
         this.jpanelVentas.jButtonCrearTicket.addActionListener(this);
         this.jpanelVentas.jButtonEliminarTicket.addActionListener(this);
         this.jpanelVentas.jButtonCambiarTicket.addActionListener(this);
@@ -78,9 +87,17 @@ public class ControladorVender implements ActionListener, KeyListener {
         this.jpanelVentas.jButtonMayoreo.addActionListener(this);
         this.jDialogVerificadorPrecios.jTextFieldCodigoBarras.addKeyListener(this);
         this.jpanelVentas.jButtonAgregarProducto.addActionListener(this);
-
+        this.jDialogVentaFinal.jTextFieldPagoCon.addKeyListener(this);
         this.jDialogMasDe1Producto.jButtonCancelar.addActionListener(this);
+        this.jDialogMasDe1Producto.jTextFieldCodigoBarras.addKeyListener(this);
+        this.jDialogMasDe1Producto.jTextFieldCantidad.addKeyListener(this);
+        this.jpanelVentas.jButtonSuprimir.addActionListener(this);
+        this.jpanelVentas.jButtonVerificador.addActionListener(this);
+        this.jDialogVerificadorPrecios.jButtonAceptar.addActionListener(this);
+        this.jpanelVentas.jButtonCobrar.addActionListener(this);
 
+        //this.jDialogVentaAgranel.jTextFieldImporte.addKeyListener(this);
+        // this.jDialogVentaAgranel.jTextFieldCantidad.addKeyListener(this);
         productos = new ArrayList<>();
         jDialogBuscarProducto.jTableProductos.setModel(llenarTabla());
         productoDao = new ProductoDao();
@@ -96,18 +113,51 @@ public class ControladorVender implements ActionListener, KeyListener {
         });
         defaultTableModelArray.get(0).setColumnIdentifiers(columnNames);
         jPanelTicketArray.get(0).jTableVender.setModel(defaultTableModelArray.get(0));
+        jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
+        jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);
+        jpanelVentas.jTextFieldCodigoBarras.requestFocus();
+        muqui();
+        t();
+
     }
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-        
+        if (arg0.getSource() == jpanelVentas.jButtonCobrar) {
+
+            formaDepago();
+        }
+
+        if (arg0.getSource() == jDialogVerificadorPrecios.jButtonAceptar) {
+            jDialogVerificadorPrecios.setVisible(false);
+            jDialogVerificadorPrecios.jLabelCodigo.setText("Codigo");
+            jDialogVerificadorPrecios.jLabelDescripcionj.setText("Descripción");
+            jDialogVerificadorPrecios.jLabelNombre.setText("Nombre");
+            jDialogVerificadorPrecios.jLabelPrecio.setText("Precio");
+        }
+
+        if (arg0.getSource() == jpanelVentas.jButtonVerificador) {
+
+            jDialogVerificadorPrecios.setLocationRelativeTo(null);
+            jDialogVerificadorPrecios.setVisible(true);
+        }
+        if (arg0.getSource() == jpanelVentas.jButtonSuprimir) {
+
+            eliminarProducto();
+        }
 
         if (arg0.getSource() == jpanelVentas.jButtonAgregarProducto) {
-             insertarProducto();
-        }        
-                
+            insertarProducto();
+        }
+
         if (arg0.getSource() == jpanelVentas.jButtonMayoreo) {
-            ventasMayoreoMenudeo();
+            if (vistaPrincipal.usuario.getNivel() == 0) {
+                ventasMayoreoMenudeo();
+            } else {
+                // UIManager.put("OptionPane.minimumSize",new Dimension(500,500)); 
+                JOptionPane.showMessageDialog(null, "No tienes los permisos para acceder.", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+            }
+
         }
 
         if (arg0.getSource() == jpanelVentas.jButtonInsertarMasD1) {
@@ -184,9 +234,9 @@ public class ControladorVender implements ActionListener, KeyListener {
             }
             if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 jDialogVerificadorPrecios.setVisible(false);
-                jDialogVerificadorPrecios.jLabelDescripcionj.setText("");
-                jDialogVerificadorPrecios.jLabelNombre.setText("");
-                jDialogVerificadorPrecios.jLabelPrecio.setText("");
+                jDialogVerificadorPrecios.jLabelDescripcionj.setText("Descripción");
+                jDialogVerificadorPrecios.jLabelNombre.setText("Nombre");
+                jDialogVerificadorPrecios.jLabelPrecio.setText("Precio");
             }
         }
 
@@ -195,6 +245,17 @@ public class ControladorVender implements ActionListener, KeyListener {
                 insertarProducto();
             }
             if (ke.getSource() == jpanelVentas.jTextFieldCodigoBarras) {
+
+                if (ke.getKeyCode() == KeyEvent.VK_F7) {
+                    eliminarTicket();
+                }
+                if (ke.getKeyCode() == KeyEvent.VK_F6) {
+                    cambiarTicket();
+                }
+                if (ke.getKeyCode() == KeyEvent.VK_F5) {
+                    addTicket();
+                }
+
                 if (ke.getKeyCode() == KeyEvent.VK_F4) {
                     jDialogVerificadorPrecios.setLocationRelativeTo(null);
                     jDialogVerificadorPrecios.setVisible(true);
@@ -205,7 +266,12 @@ public class ControladorVender implements ActionListener, KeyListener {
         }
         if (ke.getSource() == jpanelVentas.jTextFieldCodigoBarras) {
             if (ke.getKeyCode() == KeyEvent.VK_F3) {
-                ventasMayoreoMenudeo();
+                if (vistaPrincipal.usuario.getNivel() == 0) {
+                    ventasMayoreoMenudeo();
+                } else {
+                    // UIManager.put("OptionPane.minimumSize",new Dimension(500,500)); 
+                    JOptionPane.showMessageDialog(null, "No tienes los permisos para acceder.", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+                }
 
             }
 
@@ -265,6 +331,27 @@ public class ControladorVender implements ActionListener, KeyListener {
     @Override
     public void keyReleased(KeyEvent arg0) {
 
+        if (arg0.getSource() == jDialogMasDe1Producto.jTextFieldCodigoBarras || arg0.getSource() == jDialogMasDe1Producto.jTextFieldCantidad) {
+            if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+                insertarProductoMasDe1();
+            }
+            if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                jDialogMasDe1Producto.setVisible(false);
+            }
+
+        }
+        if (arg0.getSource() == jDialogVentaFinal.jTextFieldPagoCon) {
+            try {
+
+                BigDecimal cantidad = new BigDecimal(jDialogVentaFinal.jTextFieldPagoCon.getText().trim());
+
+                BigDecimal cambio = cantidad.subtract(total);
+                jDialogVentaFinal.jTextFieldSuCambio.setText("" + cambio);
+            } catch (Exception e) {
+                System.out.println("Pago con NO se capturo " + e);
+            }
+        }
+
         if (arg0.getSource() == jDialogBuscarProducto.jTextFieldBuscar) {
             if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 jDialogBuscarProducto.setVisible(false);
@@ -291,7 +378,12 @@ public class ControladorVender implements ActionListener, KeyListener {
         int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
         DefaultTableModel d = ventasModelo.productos(jpanelVentas.jTextFieldCodigoBarras.getText(), precioVentaMenudeo, jPanelTicketArray.get(index).jTableVender, defaultTableModelArray.get(index), new BigDecimal("1"), false);
         jPanelTicketArray.get(index).jTableVender.setModel(d);
-        jpanelVentas.jLabelTotal.setText("$ " + ventasModelo.totalTicket(d));
+        jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
+        jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);
+
+        total = ventasModelo.totalTicket(d);
+        jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(d) + " total productos");
+        jpanelVentas.jLabelTotal.setText("$ " + total);
         jpanelVentas.jTextFieldCodigoBarras.setText("");
 
     }
@@ -316,6 +408,8 @@ public class ControladorVender implements ActionListener, KeyListener {
             defaultTableModelArray.get(indice).setColumnIdentifiers(columnNames);
             jpanelVentas.jTabbedPaneTickets.add(nombre, jPanelTicketArray.get(indice));
             jPanelTicketArray.get(indice).jTableVender.setModel(defaultTableModelArray.get(indice));
+            jPanelTicketArray.get(indice).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
+            jPanelTicketArray.get(indice).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);
 
         }
 
@@ -334,6 +428,7 @@ public class ControladorVender implements ActionListener, KeyListener {
     }
 
     private void cambiarTicket() {
+
         byte seleccionado = (byte) jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
 
         if (seleccionado == (jpanelVentas.jTabbedPaneTickets.getTabCount() - 1)) {
@@ -344,6 +439,13 @@ public class ControladorVender implements ActionListener, KeyListener {
 
         jpanelVentas.jTabbedPaneTickets.setSelectedIndex(seleccionado);
 
+        int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
+        DefaultTableModel d = defaultTableModelArray.get(index);
+
+        total = ventasModelo.totalTicket(d);
+        jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(d) + " total productos");
+        jpanelVentas.jLabelTotal.setText("$ " + total);
+
     }
 
     private void insertarProductoMasDe1() {
@@ -352,8 +454,12 @@ public class ControladorVender implements ActionListener, KeyListener {
         jPanelTicketArray.get(index).jTableVender.setModel(d);
 
         System.out.println("click insertar mas de un producto  SE OCULTA EL DIALOGO");
-        jpanelVentas.jLabelTotal.setText("$ " + ventasModelo.totalTicket(d));
+        total = ventasModelo.totalTicket(d);
+        jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(d) + " total productos");
+        jpanelVentas.jLabelTotal.setText("$ " + total);
         jpanelVentas.jTextFieldCodigoBarras.setText("");
+        jDialogMasDe1Producto.jTextFieldCantidad.setText("");
+        jDialogMasDe1Producto.jTextFieldCodigoBarras.setText("");
         jDialogMasDe1Producto.setVisible(false);
     }
 
@@ -361,6 +467,7 @@ public class ControladorVender implements ActionListener, KeyListener {
         jDialogMasDe1Producto.pack();
         jDialogMasDe1Producto.setLocationRelativeTo(null);
         jDialogMasDe1Producto.setVisible(true);
+        jDialogMasDe1Producto.jTextFieldCodigoBarras.requestFocus();
 
     }
 
@@ -371,8 +478,10 @@ public class ControladorVender implements ActionListener, KeyListener {
 
         defaultTableModelArray.get(index).removeRow(row);
         jPanelTicketArray.get(index).jTableVender.setModel(defaultTableModelArray.get(index));
-
-        jpanelVentas.jLabelTotal.setText("$ " + ventasModelo.totalTicket(defaultTableModelArray.get(index)));
+        total = ventasModelo.totalTicket(defaultTableModelArray.get(index));
+        jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(defaultTableModelArray.get(index)) + " total productos");
+        
+        jpanelVentas.jLabelTotal.setText("$ " + total);
         jPanelTicketArray.get(index).jTableVender.setRowSelectionInterval(0, 0);
     }
 
@@ -393,9 +502,12 @@ public class ControladorVender implements ActionListener, KeyListener {
             int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
             DefaultTableModel d = ventasModelo.productos("" + jDialogBuscarProducto.jTableProductos.getValueAt(jDialogBuscarProducto.jTableProductos.getSelectedRow(), 0), precioVentaMenudeo, jPanelTicketArray.get(index).jTableVender, defaultTableModelArray.get(index), new BigDecimal("1"), false);
             jPanelTicketArray.get(index).jTableVender.setModel(d);
-            jpanelVentas.jLabelTotal.setText("$ " + ventasModelo.totalTicket(d));
+            total = ventasModelo.totalTicket(d);
+            jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(d) + " total productos");
+            jpanelVentas.jLabelTotal.setText("$ " + total);
             jpanelVentas.jTextFieldCodigoBarras.setText("");
             jDialogBuscarProducto.setVisible(false);
+            jDialogBuscarProducto.jTextFieldBuscar.selectAll();
 
         }
 
@@ -442,45 +554,84 @@ public class ControladorVender implements ActionListener, KeyListener {
     }
 
     private void verificadorDeprecios() {
+        VerificarPrecioDao verificarPrecioDao = new VerificarPrecioDao();
 
-        Tproducto p = productoDao.getByCodigoBarras(jDialogVerificadorPrecios.jTextFieldCodigoBarras.getText().trim());
+        Tproducto p = verificarPrecioDao.verificarProducto(jDialogVerificadorPrecios.jTextFieldCodigoBarras.getText().trim());
+
         if (p == null) {
+            jDialogVerificadorPrecios.jLabelCodigo.setText("Codigo: ");
             jDialogVerificadorPrecios.jLabelNombre.setText("Nombre: ");
             jDialogVerificadorPrecios.jLabelDescripcionj.setText("Descripción: ");
             jDialogVerificadorPrecios.jLabelPrecio.setText("Precio: $ ");
             JOptionPane.showMessageDialog(null, "Codigo de barras no existe", "error", JOptionPane.ERROR_MESSAGE);
 
         } else {
+            jDialogVerificadorPrecios.jLabelCodigo.setText("Codigo: " + p.getCodigoBarras());
             jDialogVerificadorPrecios.jLabelNombre.setText("Nombre: " + p.getNombre());
             jDialogVerificadorPrecios.jLabelDescripcionj.setText("Descripción: " + p.getDescripcion());
             jDialogVerificadorPrecios.jLabelPrecio.setText("Precio: $ " + p.getPrecioVentaUnitario());
         }
+        jDialogVerificadorPrecios.jTextFieldCodigoBarras.setText("");
 
-//
-//            jDialogBuscarProducto.jTableProductos.setModel(llenarTabla());
-//            jDialogBuscarProducto.jTableProductos.setRowSelectionInterval(0, 0);
-        System.out.println("verificadpr de ´precios " + p);
-        //  productoDao.cerrar();
     }
 
     private void ventasMayoreoMenudeo() {
         int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
         System.out.println(" cantidad ticket " + defaultTableModelArray.get(index).getRowCount());
         if (defaultTableModelArray.get(index).getRowCount() <= 0) {
-           
+            precioVentaMenudeo = !precioVentaMenudeo;
+            System.out.println("TIPO VENTA mayorero menudeo " + precioVentaMenudeo);
+
             if (precioVentaMenudeo) {
-                 precioVentaMenudeo = false;
-                jpanelVentas.jLabelMayoreio.setVisible(true);
+
+                jpanelVentas.jLabelMayoreio.setVisible(false);
                 jpanelVentas.jLabelMayoreio.setText("Ventas de mayoreo activado");
             } else {
-                precioVentaMenudeo = true;
-                jpanelVentas.jLabelMayoreio.setVisible(false);
+
+                jpanelVentas.jLabelMayoreio.setVisible(true);
 
             }
         } else {
             JOptionPane.showMessageDialog(null, "Primero vacie el ticket", "error", JOptionPane.ERROR_MESSAGE);
         }
 
-        System.out.println("precio mayoreo " + precioVentaMenudeo);
+        System.out.println("precio menudeo " + precioVentaMenudeo);
+    }
+
+    public void t() {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                if (jDialogBuscarProducto.isShowing()) {
+                    jDialogBuscarProducto.jTextFieldBuscar.requestFocus();
+                }
+                if (jpanelVentas.isShowing()) {
+                    jpanelVentas.jTextFieldCodigoBarras.requestFocus();
+                }
+                if (jDialogVentaFinal.isShowing()) {
+                    jDialogVentaFinal.jTextFieldPagoCon.requestFocus();
+
+                }
+
+            }
+        };
+        timer.schedule(task, 10, 100);
+
+    }
+
+    public void muqui() {
+        this.jpanelVentas.jTabbedPaneTickets.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent arg0) {
+                // System.out.println("Tab: " + jpanelVentas.jTabbedPaneTickets.getSelectedIndex());
+                int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
+                DefaultTableModel d = defaultTableModelArray.get(index);
+
+                total = ventasModelo.totalTicket(d);
+                jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(d) + " total productos");
+                System.out.println("TOTAL DE Productos" + ventasModelo.totalProductos(d));
+                jpanelVentas.jLabelTotal.setText("$ " + total);
+            }
+        });
     }
 }

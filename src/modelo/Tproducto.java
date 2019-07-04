@@ -93,7 +93,7 @@ public class Tproducto  implements java.io.Serializable {
         this.idProducto = idProducto;
     }
 
-@ManyToOne(fetch=FetchType.EAGER)
+@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="categoria_id", nullable=false)
     public Departamento getDepartamento() {
         return this.departamento;
@@ -223,7 +223,7 @@ public class Tproducto  implements java.io.Serializable {
         this.ieps = ieps;
     }
 
-@OneToMany(fetch=FetchType.EAGER, mappedBy="tproducto")
+@OneToMany(fetch=FetchType.LAZY, mappedBy="tproducto")
     public Set<Tventadetalle> getTventadetalles() {
         return this.tventadetalles;
     }
@@ -232,7 +232,7 @@ public class Tproducto  implements java.io.Serializable {
         this.tventadetalles = tventadetalles;
     }
 
-@OneToMany(fetch=FetchType.EAGER, mappedBy="tproducto")
+@OneToMany(fetch=FetchType.LAZY, mappedBy="tproducto")
     public Set<ContenidoPaquete> getContenidoPaquetes() {
         return this.contenidoPaquetes;
     }

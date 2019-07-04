@@ -5,23 +5,21 @@
  */
 package controlador;
 
-import dao.MisVentasDao;
-import hibernate.HibernateUtil;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import javax.swing.table.DefaultTableModel;
-import modelo.Tventa;
 import modelo.Tventadetalle;
-import org.hibernate.Session;
 import vista.Principal;
 import vista.reporte.JPanelMisVentas;
 
@@ -34,7 +32,7 @@ public class ControladorMisVentas implements ActionListener {
     Principal vistaPrincipal;
     JPanelMisVentas jpanelMisVentas;
     private List<Tventadetalle> listaventas;
-    MisVentasDao misVentasDao = new MisVentasDao();
+    // MisVentasDao misVentasDao = new MisVentasDao();
 
     public ControladorMisVentas(Principal vistaPrincipal, JPanelMisVentas jpanelMisVentas) {
         this.vistaPrincipal = vistaPrincipal;
@@ -63,6 +61,11 @@ public class ControladorMisVentas implements ActionListener {
             }
         };
         try {
+            Properties prop = new Properties();
+           //InputStream input =getClass().getClassLoader().getResourceAsStream("hibernate.properties");
+            InputStream input = new FileInputStream("hibernate.properties");
+            prop.load(input);
+            
             System.out.println("mis ventas .........................................");
 
             String[] columnNames = {"ID VENTA", "FECHA", "CODIGO", "NOMBRE", "DEPARTAMENTO", "USUARIO", "CANTIDAD", "PRECIO", "COSTO TOTAL PROVEEDOR", "TOTAL"};
@@ -76,20 +79,24 @@ public class ControladorMisVentas implements ActionListener {
 
             //muestra panel nuevo producto
             System.out.println("mis ventas ......................................... repaint");
-
-            Class.forName("com.mysql.jdbc.Driver");
+            String clase = prop.getProperty("hibernate.connection.driver_class");
+            Class.forName(clase);   // Class.forName("com.mysql.jdbc.Driver");
             // Establecemos la conexión con la base de datos. 
-            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/puntoventa", "root", "Fedora12");
+            String url = prop.getProperty("hibernate.connection.url");
+            String user = prop.getProperty("hibernate.connection.username");
+            String password = prop.getProperty("hibernate.connection.password");
+             Connection conexion = DriverManager.getConnection(url,user,password); //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/puntoventa", "root", "Fedora12");
             // Preparamos la consulta 
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
-        String i = df.format(new Date());
-        String f = df.format(new Date());
+            String i = df.format(new Date());
+            String f = df.format(new Date());
             Statement s = conexion.createStatement();
-            String consultaSql = "select d.idVenta,v.fechaRegistro, d.codigoBarrasProducto, d.nombreProducto, dep.nombre, u.nombre, d.cantidad, d.precioventaUnitarioProducto, d.precioproveedor, d.totalprecioventa  from tventadetalle d inner join tventa v  on v.idventa = d.idventa inner join tproducto p on p.idproducto = d.idproducto inner join departamento dep on p.categoria_id = dep.id inner join usuario u on u.id = v.usuario_id  where u.nombre = '"+ vistaPrincipal.usuario.getNombre()+"' and v.fecharegistro >='"+ i +" 00:00:00' and v.fecharegistro <='"+ f +" 23:59:59' and d.imprimir = 1";
-            System.out.println("sentencia " +  consultaSql);
+            System.out.println("usuario " + vistaPrincipal.usuario.getNombre() );
+            String consultaSql = "select d.idVenta,v.fechaRegistro, d.codigoBarrasProducto, d.nombreProducto, dep.nombre, u.nombre, d.cantidad, d.precioventaUnitarioProducto, d.precioproveedor, d.totalprecioventa  from tventadetalle d inner join tventa v  on v.idventa = d.idventa inner join tproducto p on p.idproducto = d.idproducto inner join departamento dep on p.categoria_id = dep.id inner join usuario u on u.id = v.usuario_id  where u.nombre = '" + vistaPrincipal.usuario.getNombre() + "' and v.fecharegistro >='" + i + " 00:00:00' and v.fecharegistro <='" + f + " 23:59:59' and d.imprimir = 1 ORDER BY v.fechaRegistro desc";
+            System.out.println("sentencia " + consultaSql);
             ResultSet rs = s.executeQuery(consultaSql);
             // Recorremos el resultado, mientras haya registros para leer, y escribimos el resultado en pantalla. 
-             total = new BigDecimal("0.00");
+            total = new BigDecimal("0.00");
             Object[] fila = new Object[tableModel.getColumnCount()];
             while (rs.next()) {
                 fila[0] = "" + rs.getInt(1);
@@ -113,7 +120,7 @@ public class ControladorMisVentas implements ActionListener {
             // Logger.getLogger(ControladorInventario.class.getName()).log(Level.SEVERE, null, ex);
         }
         jpanelMisVentas.jTableVentasDetalle.setModel(tableModel);
-          jpanelMisVentas.jLabelTotalVentas.setText("" + total);
+        jpanelMisVentas.jLabelTotalVentas.setText("" + total);
 
     }
 

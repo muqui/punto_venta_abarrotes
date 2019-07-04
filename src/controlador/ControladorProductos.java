@@ -1,5 +1,6 @@
 package controlador;
 
+import dao.AltaProductoDao;
 import dao.ProductoDao;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,7 +35,7 @@ public class ControladorProductos implements ActionListener {
     JpanelProductoNuevo jpanelProductoNuevo;
     JpanelContenidoPaquete jpanelContenidoPaquete;
     ProductoDao productoDao;
-   // DepartamentoDao departamentodao = new DepartamentoDao();
+    // DepartamentoDao departamentodao = new DepartamentoDao();
     Tproducto producto = new Tproducto();
     Tproducto productoContenido = new Tproducto();
     List<ContenidoPaquete> contenidoPaqueteList;
@@ -45,7 +46,7 @@ public class ControladorProductos implements ActionListener {
         this.jpanelProductos = jpanelProductos;
         this.jpanelProductoNuevo = jpanelProductoNuevo;
         this.jpanelContenidoPaquete = jpanelContenidoPaquete;
-        productoDao = new ProductoDao();
+
         jpanelProductoNuevo.jButtonGuardar.addActionListener(this);
         jpanelProductos.jButtonAlta.addActionListener(this);
         vistaPrincipal.jButtonProductos.addActionListener(this);
@@ -160,7 +161,7 @@ public class ControladorProductos implements ActionListener {
                 jpanelProductoNuevo.jTextFieldMinimoInventario.setVisible(true);
                 jpanelProductoNuevo.jLabel1ErrorMinimo.setVisible(true);
                 jpanelProductoNuevo.jCheckBoxInventario.setVisible(true);
-               
+
                 jpanelProductoNuevo.jButtonGuardar.setText("Guardar");
                 llenarComboDepartamento();
             }
@@ -196,7 +197,7 @@ public class ControladorProductos implements ActionListener {
         jpanelProductos.jPanelPincipal.validate();
         jpanelProductos.jPanelPincipal.repaint();
         jpanelProductoNuevo.jLabel1ErrorDescripcion.setText("");
-     //   llenarComboDepartamento();
+           llenarComboDepartamento();
         perderFocus();
     }
 
@@ -225,17 +226,19 @@ public class ControladorProductos implements ActionListener {
     }
 
     public boolean guardar() {
+        //productoDao = new ProductoDao();
+        AltaProductoDao altaProductoDao = new AltaProductoDao();
         clearErrorLabel();
 
         boolean bandera = true;
 
         try {
-            Tproducto p = productoDao.getByCodigoBarras(jpanelProductoNuevo.jTextFieldCodigoBarras.getText());
-            System.out.println("p" + p);
-            if (p != null) {
+            boolean productoExiste = altaProductoDao.getByCodigoBarras(jpanelProductoNuevo.jTextFieldCodigoBarras.getText());
+            if (productoExiste == false) {
                 bandera = false;
                 jpanelProductoNuevo.jLabel1ErrorCodigoBarras.setText("Este producto ya existe.");
             }
+
             if (!"".equals(jpanelProductoNuevo.jTextFieldCodigoBarras.getText().trim())) {
                 producto.setCodigoBarras(jpanelProductoNuevo.jTextFieldCodigoBarras.getText().trim());
 
@@ -263,7 +266,8 @@ public class ControladorProductos implements ActionListener {
                 producto.setComosevende("Paquete");
             }
             String departamento = jpanelProductoNuevo.jComboBoxDepartamento.getSelectedItem().toString();
-            producto.setDepartamento(productoDao.getDepartamento(departamento));
+            producto.setDepartamento(altaProductoDao.getDepartamento(departamento));
+           
             // VALIDAR PAQUETE
             if (jpanelProductoNuevo.jComboBoxComoSevende.getSelectedIndex() == 2) {
                 producto.setInventariar(false);
@@ -288,10 +292,7 @@ public class ControladorProductos implements ActionListener {
                 producto.setPrecioMayoreo(precioVentaT);
                 producto.setPrecioProveedor(precioCostoT);
 
-                System.out.println("VentaF " + precioVentaT + "  CostoF " + precioCostoT);
-                System.out.println(" #########################################  ES PAQUETE ################################################################");
             } else { // VALIDAD UNIDAD - GRANEL
-                System.out.println(" #########################################  es UNIDAD  O GRANEL ################################################################");
                 if (!"".equals(jpanelProductoNuevo.jTextFieldPrecioCosto.getText().trim()) && !".".equals(jpanelProductoNuevo.jTextFieldPrecioCosto.getText().trim())) {
                     producto.setPrecioProveedor(new BigDecimal(jpanelProductoNuevo.jTextFieldPrecioCosto.getText().trim()));
 
@@ -343,7 +344,7 @@ public class ControladorProductos implements ActionListener {
             Logger.getLogger(ControladorProductos.class.getName()).log(Level.SEVERE, null, ex);
 
         }
-
+        System.out.println("FIN GUARDAR .........................");
         return bandera;
     }
 
@@ -408,21 +409,21 @@ public class ControladorProductos implements ActionListener {
     }
 
     private void llenarComboDepartamento() {
+        productoDao = new ProductoDao();
         jpanelProductoNuevo.jComboBoxDepartamento.setModel(new DefaultComboBoxModel());
         try {
 
             List<Departamento> departamentos;
             departamentos = productoDao.getDepartamento();
             for (int i = 0; i < departamentos.size(); i++) {
-                
+
                 jpanelProductoNuevo.jComboBoxDepartamento.addItem("" + departamentos.get(i).getNombre());
-               
 
             }
         } catch (Exception ex) {
             Logger.getLogger(ControladorProductos.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        productoDao.cerrar();
     }
 
     public DefaultTableModel llenarTablaPaquete() {
@@ -532,4 +533,3 @@ public class ControladorProductos implements ActionListener {
 
     }
 }
-

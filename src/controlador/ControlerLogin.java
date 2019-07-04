@@ -9,6 +9,8 @@ import dao.LoginDao;
 import encryption.Encryption;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -22,7 +24,7 @@ import vista.Principal;
  *
  * @author mq12
  */
-public class ControlerLogin implements ActionListener {
+public class ControlerLogin implements ActionListener, KeyListener {
 
     Principal vistaPrincipal;
     Login login;
@@ -41,6 +43,8 @@ public class ControlerLogin implements ActionListener {
         this.vistaPrincipal.jButtonSalir.addActionListener(this);
         this.vistaPrincipal.jButtonCerrarSession.addActionListener(this);
         this.vistaPrincipal.jButtonVentas.addActionListener(this);
+        this.login.jTextFieldUsuario.addKeyListener(this);
+        this.login.jPasswordFieldPass.addKeyListener(this);
     }
 
     public void iniciar() {
@@ -56,6 +60,7 @@ public class ControlerLogin implements ActionListener {
 
         login.setLocationRelativeTo(null);
         login.setVisible(true);
+       
     }
 
     private void login() {
@@ -117,7 +122,32 @@ public class ControlerLogin implements ActionListener {
             vistaPrincipal.jPanelPanelPrincipal.add(jpanelVentas);
             vistaPrincipal.jPanelPanelPrincipal.validate();
             vistaPrincipal.jPanelPanelPrincipal.repaint();
+            jpanelVentas.jTextFieldCodigoBarras.requestFocus();
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent arg0) {
+       
+    }
+
+    @Override
+    public void keyPressed(KeyEvent arg0) {
+        if (arg0.getSource() ==  login.jTextFieldUsuario || arg0.getSource() ==    login.jPasswordFieldPass) {
+            if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+                 login();
+            }
+           
+        }
+        
+      
+                
+                
+    }
+
+    @Override
+    public void keyReleased(KeyEvent arg0) {
+       
     }
 
 }

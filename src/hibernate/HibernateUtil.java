@@ -5,6 +5,8 @@
  */
 package hibernate;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.SessionFactory;
 
@@ -29,7 +31,9 @@ private static SessionFactory buildSessionFactory() {
 
         Properties dbConnectionProperties = new Properties();
         try {
-            dbConnectionProperties.load(HibernateUtil.class.getClassLoader().getSystemClassLoader().getResourceAsStream("hibernate.properties"));
+           // dbConnectionProperties.load(HibernateUtil.class.getClassLoader().getSystemClassLoader().getResourceAsStream("hibernate.properties"));
+           InputStream is = new FileInputStream("hibernate.properties");
+           dbConnectionProperties.load(is);
         } catch(Exception e) {
             e.printStackTrace();
             // Log

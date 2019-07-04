@@ -25,12 +25,13 @@ public class ProductoDao {
     Transaction transaction;
 
     public ProductoDao() {
-        session = HibernateUtil.getSessionFactory().openSession();
+      
     }
 
     public Tproducto getByCodigoBarras(String codigoBarras) {
         Tproducto producto = null;
-        //session = HibernateUtil.getSessionFactory().openSession();
+       
+        session = HibernateUtil.getSessionFactory().openSession();
         String hql = "from Tproducto where codigoBarras=:codigoBarras";
         Query query = session.createQuery(hql);
         query.setParameter("codigoBarras", codigoBarras);
@@ -91,6 +92,7 @@ public class ProductoDao {
             JOptionPane.showMessageDialog(null, "Error al agregar producto: \n" + e, "error", JOptionPane.ERROR_MESSAGE);
         } finally {
             session.close();
+            System.out.println("add Product int cerrar");
         }
         return resultado;
     }
@@ -112,8 +114,10 @@ public class ProductoDao {
         }
         return resultado;
     }
+
     public Departamento getDepartamento(String nombre) {
         session = HibernateUtil.getSessionFactory().openSession();
+         System.out.println("SE abrio hibernate");
         String hql = "from Departamento where nombre=:nombre";
 
         Query query = session.createQuery(hql);
@@ -122,18 +126,21 @@ public class ProductoDao {
         return (Departamento) query.uniqueResult();
 
     }
-       public List<Departamento> getDepartamento() throws Exception {
-         session = HibernateUtil.getSessionFactory().openSession();
+
+    public List<Departamento> getDepartamento() throws Exception {
+        session = HibernateUtil.getSessionFactory().openSession();
         String hql = "from Departamento ";
         Query query = session.createQuery(hql);
-        
+
         List<Departamento> productosPorNombre = (List<Departamento>) query.list();
 
         return productosPorNombre;
-    } 
+    }
 
+    
+    
     public void cerrar() {
-
+       
         session.close();
     }
 }

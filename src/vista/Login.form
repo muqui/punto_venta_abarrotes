@@ -83,9 +83,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldUsuario">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="admin"/>
-      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldUsuarioActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
@@ -102,9 +102,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JPasswordField" name="jPasswordFieldPass">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="corona12"/>
-      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>

@@ -12,21 +12,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import vista.JDialogBuscarProducto;
 import vista.JDialogVentaAgranel;
 import vista.JDialogVentaFinal;
 import vista.JPanelTicket;
 import vista.JpanelVentas;
+import vista.Principal;
 
 /**
  *
@@ -51,16 +51,17 @@ public class VentasModelo implements ActionListener, KeyListener {
     List<Formadepago> listFormaDePago;
     Tventa venta;
     VentaDao ventaDao;
-    Usuario usuario;
+    // Usuario usuario;
+    Principal vistaPrincipal;
     List<Tproducto> productos;
 
-    public VentasModelo(JDialogVentaAgranel jDialogVentaAgranel, JDialogVentaFinal jDialogVentaFinal, Usuario usuario, JPanelTicket jPanelTicket, JpanelVentas jpanelVentas, ArrayList<JPanelTicket> jPanelTicketArray, ArrayList<DefaultTableModel> defaultTableModelArray) {
+    public VentasModelo(JDialogVentaAgranel jDialogVentaAgranel, JDialogVentaFinal jDialogVentaFinal, Principal vistaPrincipal, JPanelTicket jPanelTicket, JpanelVentas jpanelVentas, ArrayList<JPanelTicket> jPanelTicketArray, ArrayList<DefaultTableModel> defaultTableModelArray) {
         this.jDialogVentaAgranel = jDialogVentaAgranel;
         this.jDialogVentaFinal = jDialogVentaFinal;
         this.jPanelTicket = jPanelTicket;
         this.jpanelVentas = jpanelVentas;
 
-        this.usuario = usuario;
+        this.vistaPrincipal = vistaPrincipal;
         this.jPanelTicketArray = jPanelTicketArray;
         this.defaultTableModelArray = defaultTableModelArray;
         listaVentaDetalle = new ArrayList<>();
@@ -71,10 +72,14 @@ public class VentasModelo implements ActionListener, KeyListener {
 
         this.jDialogVentaAgranel.jButtonAceptar.addActionListener(this);
         this.jDialogVentaFinal.jTextFieldPagoCon.addKeyListener(this);
-
+        this.jDialogVentaAgranel.jTextFieldImporte.addKeyListener(this);
+        this.jDialogVentaAgranel.jTextFieldCantidad.addKeyListener(this);
+        this.jDialogVentaFinal.Cobrar.addActionListener(this);
+        this.jDialogVentaFinal.jButtonCancelar.addActionListener(this);
     }
 
     public DefaultTableModel productos(String codigo, boolean precioVentaMenudeo, JTable table, DefaultTableModel defaultTableModel, BigDecimal cantidad, boolean masde1producto) {
+
         ProductoDao productoDaoTicket = new ProductoDao();
         Tproducto productoTicket = productoDaoTicket.getByCodigoBarras(codigo);
         if (productoTicket == null) {
@@ -85,16 +90,16 @@ public class VentasModelo implements ActionListener, KeyListener {
         this.cantidad = cantidad;
 
         if (precioVentaMenudeo) {
-            precio = productoTicket.getPrecioMayoreo();
-            precioUnitario = productoTicket.getPrecioMayoreo();
-           
-            System.out.println("precio mayoreo false.........................................." + precio);
-        } else {
-
             precio = productoTicket.getPrecioVentaUnitario();
             precioUnitario = productoTicket.getPrecioVentaUnitario();
-          
-            System.out.println("precio mayoreo true .........................................." + precio);
+
+            //   System.out.println(" precio " + precio + "precio menudeo  " + precioVentaMenudeo);
+        } else {
+
+            precio = productoTicket.getPrecioMayoreo();
+            precioUnitario = productoTicket.getPrecioMayoreo();
+
+            System.out.println(" precio " + precio + "precio menudeo  " + precioVentaMenudeo);
         }
 
         if (!masde1producto && productoTicket.getComosevende().equals("Granel")) {
@@ -117,7 +122,7 @@ public class VentasModelo implements ActionListener, KeyListener {
             precio = precio.multiply(this.cantidad);
             precio = precio.setScale(1, BigDecimal.ROUND_HALF_UP);
 
-            Object[] name = new Object[]{codigo, productoTicket.getNombre(), precioUnitario, this.cantidad, precio};
+            Object[] name = new Object[]{codigo, productoTicket.getNombre(), precioUnitario, this.cantidad, precio, productoTicket.getComosevende()};
             defaultTableModel.addRow(name);
         } else {
             cambiarcantidad(existe, defaultTableModel, precioUnitario, this.cantidad);
@@ -167,19 +172,47 @@ public class VentasModelo implements ActionListener, KeyListener {
         return totalVenta;
     }
 
+    public BigDecimal totalProductos(DefaultTableModel tableModelVentas) {
+
+        BigDecimal cantidad = new BigDecimal("0");
+        try {
+            for (int i = 0; i < tableModelVentas.getRowCount(); i++) {
+                ;
+                String comoSevende = (String) tableModelVentas.getValueAt(i, 5);
+                if (comoSevende.equalsIgnoreCase("Granel")) {
+                    cantidad = cantidad.add(new BigDecimal("1"));
+                } else {
+                    BigDecimal c = (BigDecimal) tableModelVentas.getValueAt(i, 3);
+                    cantidad = cantidad.add(c);
+                }
+
+            }
+        } catch (Exception ex) {
+            System.out.println("Error total Productos " + ex);
+        }
+        return cantidad;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == jDialogVentaAgranel.jButtonAceptar) {
-            cantidad = new BigDecimal(jDialogVentaAgranel.jTextFieldCantidad.getText());
 
-            jDialogVentaAgranel.setVisible(false);
+        if (e.getSource() == jDialogVentaFinal.jButtonCancelar) {
+            jDialogVentaFinal.setVisible(false);
+        }
+
+        if (e.getSource() == jDialogVentaFinal.Cobrar) {
+            realizarCobro(defaultableModelTicket);
+        }
+        if (e.getSource() == jDialogVentaAgranel.jButtonAceptar) {
+            insertarVentaAgranel();
         }
 
     }
 
     private void realizarCobro(DefaultTableModel defaultableModelTicket) {
+
         ventaDao = new VentaDao();
-        System.out.println("REALIZAR COBRO ................................................ " + usuario);
+
         efectivo = false;
 
         int idVenta = 0;
@@ -199,8 +232,6 @@ public class VentasModelo implements ActionListener, KeyListener {
                 listFormaDePago.add(new Formadepago(venta, "CREDITO", null, "" + jDialogVentaFinal.jTableClientes.getValueAt(selected, 0)));
                 idVenta = saveVenta(defaultableModelTicket);
 
-                //Tventa v = ventaDao.getUltimoRegistro(idVenta);
-                // ventaDao.insertFormaPago(new Formadepago(v, "CREDITO", v.getPrecioVentaTotal(), "" + jdialogVentaFinal.jTableClientes.getValueAt(selected, 0)));
                 postVenta();
             } else {
                 JOptionPane.showMessageDialog(null, "Seleccione cliente", "Error", JOptionPane.ERROR_MESSAGE);
@@ -276,8 +307,6 @@ public class VentasModelo implements ActionListener, KeyListener {
             sumatotal = sumatotal.add(vale);
             sumatotal = sumatotal.add(credito);
 
-            System.out.println("efectivo " + efectivo + " tarjeta " + tarjeta + " vale  " + vale + " credito " + credito);
-            System.out.println("suma total: " + sumatotal + " total " + total);
             if (bandera) {
 
                 BigDecimal restante = total.subtract(sumatotal);
@@ -335,14 +364,13 @@ public class VentasModelo implements ActionListener, KeyListener {
 
                 String nombre = (String) tableModelVentas.getValueAt(i, 1);
                 BigDecimal precioUnitario = (BigDecimal) tableModelVentas.getValueAt(i, 2);
-
                 BigDecimal cantidad = (BigDecimal) tableModelVentas.getValueAt(i, 3);
                 BigDecimal PrecioProveedor = product.getPrecioProveedor().multiply(cantidad);
                 BigDecimal total = (BigDecimal) tableModelVentas.getValueAt(i, 4);
                 String comoSeVende = product.getComosevende();
 
                 if (product.getComosevende().equals("Paquete")) {
-                    System.out.println("ES UN PAQUETE");
+
                     for (ContenidoPaquete item : productoDao.getContenidoPaquete(product.getIdProducto())) {
 
                         BigDecimal cant = item.getCantidad();
@@ -368,12 +396,11 @@ public class VentasModelo implements ActionListener, KeyListener {
         }
         Set<Tventadetalle> setTventadetalle = new HashSet<Tventadetalle>(listaVentaDetalle);
         venta.setTventadetalles(setTventadetalle);
-        venta.setUsuario(usuario);
+
+        venta.setUsuario(vistaPrincipal.usuario);
         venta.setFechaRegistro(new Date());
         venta.setPrecioVentaTotal(totalTicket(tableModelVentas));
         idVenta = ventaDao.insert(venta, listFormaDePago);
-
-        System.out.println("id venta " + idVenta);
 
         return idVenta;
     }
@@ -400,9 +427,22 @@ public class VentasModelo implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent ke) {
+
         if (ke.getSource() == jDialogVentaFinal.jTextFieldPagoCon) {
             if (ke.getKeyCode() == KeyEvent.VK_F12) {
                 realizarCobro(defaultableModelTicket);
+            }
+            if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                jDialogVentaFinal.setVisible(false);
+            }
+
+        }
+
+        if (ke.getSource() == jDialogVentaAgranel.jTextFieldCantidad || ke.getSource() == jDialogVentaAgranel.jTextFieldImporte) {
+
+            if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
+                insertarVentaAgranel();
+
             }
 
         }
@@ -411,6 +451,35 @@ public class VentasModelo implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent arg0) {
+
+        if (arg0.getSource() == jDialogVentaAgranel.jTextFieldCantidad) {
+
+            try {
+
+                // jDialogVentaAgranel.jTextFieldImporte.setText("" + jDialogVentaAgranel.jTextFieldCantidad.getText());
+                float cantidad = Float.parseFloat(jDialogVentaAgranel.jTextFieldCantidad.getText().trim());
+                BigDecimal importe = precio;
+                importe = importe.multiply(new BigDecimal(cantidad));
+                importe = importe.setScale(2, BigDecimal.ROUND_HALF_UP);
+
+                jDialogVentaAgranel.jTextFieldImporte.setText("" + importe);
+            } catch (Exception e) {
+                jDialogVentaAgranel.jTextFieldImporte.setText("");
+            }
+
+        }
+        if (arg0.getSource() == jDialogVentaAgranel.jTextFieldImporte) {
+
+            try {
+
+                BigDecimal importe = new BigDecimal(jDialogVentaAgranel.jTextFieldImporte.getText().trim());
+                BigDecimal cantidad = importe.divide(precio, 3, BigDecimal.ROUND_HALF_UP);
+                jDialogVentaAgranel.jTextFieldCantidad.setText("" + cantidad);
+            } catch (Exception e) {
+                jDialogVentaAgranel.jTextFieldCantidad.setText("");
+            }
+
+        }
 
     }
 
@@ -441,8 +510,10 @@ public class VentasModelo implements ActionListener, KeyListener {
         jDialogVentaFinal.jTextFieldMixtoCreditoNombre.setText("");
         jDialogVentaFinal.jLabelMixtoIdCliente.setText("ID");
         jDialogVentaFinal.setVisible(false);
-        productoDao.cerrar();
+        jpanelVentas.jLabelTotalProductosVendidos.setText("0 total productos");
         ventaDao.cerrar();
+        productoDao.cerrar();
+
     }
 
     private void limpiarErroresMixto() {
@@ -453,6 +524,19 @@ public class VentasModelo implements ActionListener, KeyListener {
         jDialogVentaFinal.jLabelErrorVale.setText("");
         jDialogVentaFinal.jLabelMixtoErrorCredito.setText("");
         jDialogVentaFinal.jLabelRestante.setText("Restante");
+    }
+
+    private void insertarVentaAgranel() {
+
+        try {
+            cantidad = new BigDecimal(jDialogVentaAgranel.jTextFieldCantidad.getText());
+            jDialogVentaAgranel.setVisible(false);
+            jDialogVentaAgranel.jTextFieldCantidad.setText("");
+            jDialogVentaAgranel.jTextFieldImporte.setText("");
+        } catch (Exception e) {
+            System.out.println("metodo insertatVentaAgranel: " + e);
+        }
+
     }
 
 }

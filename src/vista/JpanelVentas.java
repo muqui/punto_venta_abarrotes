@@ -40,7 +40,7 @@ public class JpanelVentas extends javax.swing.JPanel {
         jButtonAgregarProducto = new javax.swing.JButton();
         jButtonBuscar = new javax.swing.JButton();
         jButtonInsertarMasD1 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        jButtonSuprimir = new javax.swing.JButton();
         jLabelTotal = new javax.swing.JLabel();
         jButtonCobrar = new javax.swing.JButton();
         jTabbedPaneTickets = new javax.swing.JTabbedPane();
@@ -48,8 +48,9 @@ public class JpanelVentas extends javax.swing.JPanel {
         jButtonCrearTicket = new javax.swing.JButton();
         jButtonEliminarTicket = new javax.swing.JButton();
         jButtonMayoreo = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jButtonVerificador = new javax.swing.JButton();
         jLabelMayoreio = new javax.swing.JLabel();
+        jLabelTotalProductosVendidos = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -64,7 +65,7 @@ public class JpanelVentas extends javax.swing.JPanel {
 
         jButtonInsertarMasD1.setText("F2 - Insertar mas de 1 producto");
 
-        jButton5.setText("suprimir - Borrar");
+        jButtonSuprimir.setText("suprimir - Borrar");
 
         jLabelTotal.setFont(new java.awt.Font("Arial", 1, 48)); // NOI18N
         jLabelTotal.setForeground(new java.awt.Color(23, 77, 244));
@@ -83,13 +84,17 @@ public class JpanelVentas extends javax.swing.JPanel {
 
         jButtonMayoreo.setText("F3 - Mayoreo");
 
-        jButton2.setText("F4 - Verificador");
+        jButtonVerificador.setText("F4 - Verificador");
 
         jLabelMayoreio.setBackground(new java.awt.Color(0, 0, 255));
         jLabelMayoreio.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabelMayoreio.setForeground(new java.awt.Color(255, 0, 51));
         jLabelMayoreio.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelMayoreio.setText("jLabel1");
+        jLabelMayoreio.setText("Ventas de mayoreo activado");
+
+        jLabelTotalProductosVendidos.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        jLabelTotalProductosVendidos.setForeground(new java.awt.Color(255, 0, 0));
+        jLabelTotalProductosVendidos.setText("0 total productos");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -110,11 +115,14 @@ public class JpanelVentas extends javax.swing.JPanel {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonCobrar, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButtonCrearTicket)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonCambiarTicket)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonEliminarTicket)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButtonCrearTicket)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButtonCambiarTicket)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButtonEliminarTicket))
+                            .addComponent(jLabelTotalProductosVendidos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -124,9 +132,9 @@ public class JpanelVentas extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonMayoreo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
+                        .addComponent(jButtonVerificador)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)
+                        .addComponent(jButtonSuprimir)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jLabelMayoreio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -146,11 +154,11 @@ public class JpanelVentas extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonBuscar)
                     .addComponent(jButtonInsertarMasD1)
-                    .addComponent(jButton5)
+                    .addComponent(jButtonSuprimir)
                     .addComponent(jButtonMayoreo)
-                    .addComponent(jButton2))
+                    .addComponent(jButtonVerificador))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPaneTickets, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addComponent(jTabbedPaneTickets, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(8, 8, 8)
@@ -160,7 +168,9 @@ public class JpanelVentas extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButtonCrearTicket)
                             .addComponent(jButtonCambiarTicket)
-                            .addComponent(jButtonEliminarTicket))))
+                            .addComponent(jButtonEliminarTicket))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelTotalProductosVendidos)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonCobrar)
                 .addContainerGap())
@@ -169,8 +179,6 @@ public class JpanelVentas extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton5;
     public javax.swing.JButton jButtonAgregarProducto;
     public javax.swing.JButton jButtonBuscar;
     public javax.swing.JButton jButtonCambiarTicket;
@@ -179,9 +187,12 @@ public class JpanelVentas extends javax.swing.JPanel {
     public javax.swing.JButton jButtonEliminarTicket;
     public javax.swing.JButton jButtonInsertarMasD1;
     public javax.swing.JButton jButtonMayoreo;
+    public javax.swing.JButton jButtonSuprimir;
+    public javax.swing.JButton jButtonVerificador;
     private javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabelMayoreio;
     public javax.swing.JLabel jLabelTotal;
+    public javax.swing.JLabel jLabelTotalProductosVendidos;
     public javax.swing.JTabbedPane jTabbedPaneTickets;
     public javax.swing.JTextField jTextFieldCodigoBarras;
     // End of variables declaration//GEN-END:variables

@@ -6,14 +6,11 @@
 package dao;
 
 import hibernate.HibernateUtil;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import modelo.Formadepago;
+import modelo.Tproducto;
 import modelo.Tventa;
 import modelo.Tventadetalle;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -24,19 +21,28 @@ import org.hibernate.Transaction;
 public class VentaDao {
 
     Session session;
-     Transaction transaction;
+    Transaction transaction;
+
     public VentaDao() {
         // session = HibernateUtil.getSessionFactory().openSession();
         // transaction = this.session.beginTransaction();
     }
 
     public int insert(Tventa venta, List<Formadepago> listFormaDePago) {
+        System.out.println("Vendedor " +  venta.getUsuario().getNombre());
         int idVenta = 0;
+
         try {
-             session = HibernateUtil.getSessionFactory().openSession();
-             transaction = session.beginTransaction();
+            session = HibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
             for (Tventadetalle v : venta.getTventadetalles()) {
+                Tproducto p = v.getTproducto();
+                p.setCantidad(p.getCantidad().subtract(v.getCantidad()));
                 v.setTventa(venta);
+                if (p.getInventariar()) {
+                    session.merge(p); //actualiza la cantidad de productos
+                }
+
             }
 
             session.save(venta);
@@ -47,8 +53,9 @@ public class VentaDao {
                 session.save(f);
             }
             idVenta = venta.getIdVenta();
-            System.out.println("Tventa ID " + venta.getIdVenta() + " detalle " + venta.getTventadetalles());
+
             transaction.commit();
+            System.out.println("Se vendio "  );
             //  session.close();
         } catch (Exception e) {
             System.out.println("error + " + e);
@@ -58,8 +65,6 @@ public class VentaDao {
 
         return idVenta;
     }
-
-  
 
     public void cerrar() {
         session.close();

@@ -50,13 +50,15 @@ public class Login extends javax.swing.JDialog {
         jLabel1.setForeground(new java.awt.Color(0, 0, 153));
         jLabel1.setText("Usuario");
 
-        jTextFieldUsuario.setText("admin");
+        jTextFieldUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldUsuarioActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 153));
         jLabel2.setText("Contraseña");
-
-        jPasswordFieldPass.setText("corona12");
 
         jButtonAceptar.setText("Aceptar");
 
@@ -104,6 +106,10 @@ public class Login extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTextFieldUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldUsuarioActionPerformed
 
     /**
      * @param args the command line arguments
