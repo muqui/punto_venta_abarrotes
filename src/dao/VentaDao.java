@@ -45,12 +45,14 @@ public class VentaDao {
 
             }
 
-            session.save(venta);
+            //session.save(venta);
+            session.persist(venta);
 
             for (Formadepago f : listFormaDePago) {
                 f.setTventa(venta);
                 f.setCantidad(venta.getPrecioVentaTotal());
-                session.save(f);
+                session.persist(f);
+                //session.save(f);
             }
             idVenta = venta.getIdVenta();
 

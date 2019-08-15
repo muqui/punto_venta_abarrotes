@@ -80,7 +80,7 @@ public class ControladorIngresoEgreso implements ActionListener, KeyListener {
                     jDialogEgreso.jTextFieldCantidad.setText("");
                     jDialogEgreso.jTextAreaDescripcion.setText("");
                 } else {
-                    JOptionPane.showMessageDialog(null, "Error al crear el registro ", "error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Error al crear el registro x ", "error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
