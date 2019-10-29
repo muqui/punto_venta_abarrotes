@@ -28,18 +28,25 @@ public class JPanelConfiguracion extends javax.swing.JPanel {
     private void initComponents() {
 
         jToolBar1 = new javax.swing.JToolBar();
-        jButtonVentas = new javax.swing.JButton();
+        jButtonAltaUsuario = new javax.swing.JButton();
+        jButtonBaseDeDatos = new javax.swing.JButton();
         jPanelPrincipal = new javax.swing.JPanel();
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        jButtonVentas.setText("Alta Usuario");
-        jButtonVentas.setFocusable(false);
-        jButtonVentas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonVentas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButtonVentas);
+        jButtonAltaUsuario.setText("Alta Usuario");
+        jButtonAltaUsuario.setFocusable(false);
+        jButtonAltaUsuario.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonAltaUsuario.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButtonAltaUsuario);
+
+        jButtonBaseDeDatos.setText("Base de Datos");
+        jButtonBaseDeDatos.setFocusable(false);
+        jButtonBaseDeDatos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonBaseDeDatos.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButtonBaseDeDatos);
 
         jPanelPrincipal.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -78,7 +85,8 @@ public class JPanelConfiguracion extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton jButtonVentas;
+    public javax.swing.JButton jButtonAltaUsuario;
+    public javax.swing.JButton jButtonBaseDeDatos;
     public javax.swing.JPanel jPanelPrincipal;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables

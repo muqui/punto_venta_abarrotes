@@ -13,7 +13,6 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import modelo.Egreso;
 import modelo.Fechas;
-import vista.JDialogEgreso;
 import vista.JPanelReportes;
 import vista.Principal;
 import vista.reporte.JDialogEliminarEgreso;

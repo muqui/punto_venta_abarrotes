@@ -5,7 +5,7 @@
  */
 package controlador;
 
-import dao.DepartamentoDao;
+import dao.ModificarProductoDao;
 import dao.ProductoDao;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,7 +41,7 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
     JpanelProductoModificar jpanelProductoModificar;
     JDialogBuscarProductoModificar jDialogBuscarProductoModificar;
     JDialogModificarPaquete jDialogModificarPaquete;
-    DepartamentoDao departamentodao = new DepartamentoDao();
+    ModificarProductoDao modificarProductoDao = new ModificarProductoDao();
     ProductoDao productoDao = new ProductoDao();
     List<ContenidoPaquete> contenidoPaqueteList = new ArrayList<>();
     List<Tproducto> productos;
@@ -60,7 +60,7 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
         this.jDialogBuscarProductoModificar = jDialogBuscarProductoModificar;
         this.jDialogModificarPaquete = jDialogModificarPaquete;
         this.jpanelProductos.jButtonModificar.addActionListener(this);
-         this.jpanelProductoModificar.jButtonBuscar.addActionListener(this);
+        this.jpanelProductoModificar.jButtonBuscar.addActionListener(this);
         this.jpanelProductoModificar.jTextFieldCaptureCodigoBarras.addKeyListener(this);
         jDialogBuscarProductoModificar.jTextFieldBuscar.addKeyListener(this);
         this.jpanelProductoModificar.jButtonGuardar.addActionListener(this);
@@ -104,7 +104,7 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
                     jDialogModificarPaquete.jTextFieldPaquetePrecioCosto.setText("" + productoContenido.getPrecioProveedor());
                 }
 
-                //  productoDao.cerrar();
+                
             } catch (Exception ex) {
                 Logger.getLogger(ControladorProductos.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -146,16 +146,16 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
             limpiarTablaProductos();
 
         }
-         if (e.getSource() == jpanelProductoModificar.jButtonBuscar) {
+        if (e.getSource() == jpanelProductoModificar.jButtonBuscar) {
 
             jDialogBuscarProductoModificar.setVisible(true);
         }
-         if (e.getSource() == jDialogBuscarProductoModificar.jButtonAceptar) {
-             
-                       int selected = jDialogBuscarProductoModificar.jTableProductos.getSelectedRow();
-                       modificar(""+jDialogBuscarProductoModificar.jTableProductos.getValueAt(selected, 0));
-                       jDialogBuscarProductoModificar.setVisible(false);
-         }
+        if (e.getSource() == jDialogBuscarProductoModificar.jButtonAceptar) {
+
+            int selected = jDialogBuscarProductoModificar.jTableProductos.getSelectedRow();
+            modificar("" + jDialogBuscarProductoModificar.jTableProductos.getValueAt(selected, 0));
+            jDialogBuscarProductoModificar.setVisible(false);
+        }
     }
 
     @Override
@@ -165,8 +165,6 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
 
     @Override
     public void keyPressed(KeyEvent ke) {
-         
-           
 
         if (ke.getSource() == jpanelProductoModificar.jTextFieldCaptureCodigoBarras) {
             if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -205,11 +203,12 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
         try {
             jpanelProductoModificar.jComboBoxDepartamento.setModel(new DefaultComboBoxModel());
             List<Departamento> departamentos;
-            departamentos = departamentodao.getDepartamento();
+            departamentos = modificarProductoDao.getDepartamento();
             for (int i = 0; i < departamentos.size(); i++) {
                 jpanelProductoModificar.jComboBoxDepartamento.addItem("" + departamentos.get(i).getNombre());
 
             }
+           
         } catch (Exception ex) {
             Logger.getLogger(ControladorProductos.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -294,8 +293,8 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
             productoPaquete.setPrecioMayoreo(precioVentaT);
             productoPaquete.setPrecioProveedor(precioCostoT);
 
-            productoDao.modificarProducto(productoPaquete);
-            productoDao.borrarContenidoPaquete(productoPaquete.getIdProducto());
+            modificarProductoDao.modificarProducto(productoPaquete);
+            modificarProductoDao.borrarContenidoPaquete(productoPaquete.getIdProducto());
             for (ContenidoPaquete item : this.contenidoPaqueteList) {
                 item.setIdPaquete(productoPaquete.getIdProducto());
                 productoDao.addContenidoPaquete(item);
@@ -363,8 +362,8 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
             }
 
         } else {
-              productoUnidad.setMinimo(0);
-               productoUnidad.setCantidad(new BigDecimal("0.00"));
+            productoUnidad.setMinimo(0);
+            productoUnidad.setCantidad(new BigDecimal("0.00"));
 
         }
 
@@ -409,7 +408,7 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
 
         }
         if (bandera) {
-            productoDao.modificarProducto(productoUnidad);
+            modificarProductoDao.modificarProducto(productoUnidad);
             limpiarCamposActualizar();
         }
 
@@ -470,6 +469,7 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
         jpanelProductoModificar.jLabel1ErrorMinimo.setText("");
 
     }
+
     private void productosPorNombre(String text) {
 
         try {
@@ -479,11 +479,12 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
             jDialogBuscarProductoModificar.jTableProductos.setRowSelectionInterval(0, 0);
 
         } catch (Exception ex) {
-            Logger.getLogger(ControladorLoginYventas.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ControladorProductosModificar.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
-     public DefaultTableModel llenarTabla() {
+
+    public DefaultTableModel llenarTabla() {
         DefaultTableModel tableModel = new DefaultTableModel() {
 
             @Override

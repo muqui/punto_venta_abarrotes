@@ -27,7 +27,7 @@ import vista.reporte.JPanelReporteIngreso;
 public class ControladorMostrarIngresos implements ActionListener {
 
     private Fechas fechas = new Fechas();
-     JDialogIngreso jDialogIngreso;
+    JDialogIngreso jDialogIngreso;
     JPanelReporteIngreso jPanelReporteIngreso;
     JPanelReportes jpanelReportes;
     Principal vistaPrincipal;
@@ -36,7 +36,7 @@ public class ControladorMostrarIngresos implements ActionListener {
     private Date desde;
     private Date hasta;
 
-    public ControladorMostrarIngresos(Principal vistaPrincipal, JPanelReportes jpanelReportes, JPanelReporteIngreso jPanelReporteIngreso ,  JDialogIngreso jDialogIngreso) {
+    public ControladorMostrarIngresos(Principal vistaPrincipal, JPanelReportes jpanelReportes, JPanelReporteIngreso jPanelReporteIngreso, JDialogIngreso jDialogIngreso) {
         this.jDialogIngreso = jDialogIngreso;
         this.vistaPrincipal = vistaPrincipal;
         this.jpanelReportes = jpanelReportes;
@@ -52,7 +52,7 @@ public class ControladorMostrarIngresos implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == jPanelReporteIngreso.jButtonCapturarIngreso){
+        if (e.getSource() == jPanelReporteIngreso.jButtonCapturarIngreso) {
             mostrarDialogIngreso();
         }
         if (e.getSource() == jPanelReporteIngreso.jButtonHoy) {
@@ -71,7 +71,7 @@ public class ControladorMostrarIngresos implements ActionListener {
                 jPanelReporteIngreso.jTableIngresos.setModel(llenarTablaIngreso());
                 jPanelReporteIngreso.jLabelIngresos.setText("Ingresos del dia " + fechas.rangoFecha(jPanelReporteIngreso.jDateChooserDesde.getDate(), jPanelReporteIngreso.jDateChooserHasta.getDate()));
                 jPanelReporteIngreso.jLabelTotalVentas.setText("" + ingresoEgresoDao.getSumaIngresos(jPanelReporteIngreso.jDateChooserDesde.getDate(), jPanelReporteIngreso.jDateChooserHasta.getDate()));
-               // ingresoEgresoDao.cerrar();
+                // ingresoEgresoDao.cerrar();
             } catch (Exception ex) {
                 Logger.getLogger(ControladorMostrarIngresos.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -107,7 +107,7 @@ public class ControladorMostrarIngresos implements ActionListener {
             }
         };
 
-        String[] columnNames = {"ID","FECHA", "MOVIMIENTO", "DESCRIPCION", "CANTIDAD"};
+        String[] columnNames = {"ID", "FECHA", "MOVIMIENTO", "DESCRIPCION", "CANTIDAD"};
         tableModel.setColumnIdentifiers(columnNames);
         Object[] fila = new Object[tableModel.getColumnCount()];
 
@@ -131,7 +131,7 @@ public class ControladorMostrarIngresos implements ActionListener {
         jPanelReporteIngreso.jTableIngresos.setModel(llenarTablaIngreso());
         jPanelReporteIngreso.jLabelIngresos.setText("Ingresos del dia " + fechas.fecha(hasta));
         jPanelReporteIngreso.jLabelTotalVentas.setText("" + ingresoEgresoDao.getSumaIngresos(desde, hasta));
-       // ingresoEgresoDao.cerrar();
+        // ingresoEgresoDao.cerrar();
         fechas.ayer--;
     }
 
@@ -142,7 +142,7 @@ public class ControladorMostrarIngresos implements ActionListener {
             listaingreso = ingresoEgresoDao.getIngresos(new Date(), new Date());
             jPanelReporteIngreso.jLabelTotalVentas.setText("" + ingresoEgresoDao.getSumaIngresos(new Date(), new Date()));
             jPanelReporteIngreso.jTableIngresos.setModel(llenarTablaIngreso());
-           // ingresoEgresoDao.cerrar();
+            // ingresoEgresoDao.cerrar();
         } catch (Exception ex) {
             Logger.getLogger(ControladorMostrarIngresos.class.getName()).log(Level.SEVERE, null, ex);
         }

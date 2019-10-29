@@ -45,7 +45,7 @@ public class ControladorIngresoEgreso implements ActionListener, KeyListener {
         this.jDialogIngreso = jDialogIngreso;
         this.vistaPrincipal = vistaPrincipal;
         this.jpanelVentas = jpanelVentas;
-       
+
         this.jDialogIngreso.jCheckBoxCrearIngreso.addActionListener(this);
         this.jDialogIngreso.jPanelCrearIngreso.setVisible(false);
         jpanelVentas.jTextFieldCodigoBarras.addKeyListener(this);
@@ -80,14 +80,14 @@ public class ControladorIngresoEgreso implements ActionListener, KeyListener {
                     jDialogEgreso.jTextFieldCantidad.setText("");
                     jDialogEgreso.jTextAreaDescripcion.setText("");
                 } else {
-                    JOptionPane.showMessageDialog(null, "Error al crear el registro ", "error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Error al crear el registro x ", "error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
         if (e.getSource() == jDialogIngreso.jButtonAlta) {
             if (validarIngreso()) {
                 if (guardarIngreso()) {
-                    
+
                     JOptionPane.showMessageDialog(null, "Movimiento Registrado.", "Exito.", JOptionPane.INFORMATION_MESSAGE);
                     jDialogIngreso.jTextFieldCantidad.setText("");
                     jDialogIngreso.jTextAreaDescripcion.setText("");
@@ -99,37 +99,34 @@ public class ControladorIngresoEgreso implements ActionListener, KeyListener {
 
         if (e.getSource() == jDialogEgreso.jButtonCrear) {
             if (!"".equals(jDialogEgreso.jTextFieldNombre.getText().trim())) {
-                 Movimiento m = ingresoEgresoDao.getMovimiento(jDialogEgreso.jTextFieldNombre.getText().trim(), "egreso");
-                 if(m != null){
+                Movimiento m = ingresoEgresoDao.getMovimiento(jDialogEgreso.jTextFieldNombre.getText().trim(), "egreso");
+                if (m != null) {
                     JOptionPane.showMessageDialog(null, "Egreso existente ", "error", JOptionPane.ERROR_MESSAGE);
-                 }
-                 else{
-                   crearMovimiento(jDialogEgreso.jTextFieldNombre.getText(), "egreso");
-                JOptionPane.showMessageDialog(null, "Tipo egreso creado.", "Exito.", JOptionPane.INFORMATION_MESSAGE);
-                jDialogEgreso.jTextFieldNombre.setText("");
-                llenarComboEgreso();
-                 }
-                
+                } else {
+                    crearMovimiento(jDialogEgreso.jTextFieldNombre.getText(), "egreso");
+                    JOptionPane.showMessageDialog(null, "Tipo egreso creado.", "Exito.", JOptionPane.INFORMATION_MESSAGE);
+                    jDialogEgreso.jTextFieldNombre.setText("");
+                    llenarComboEgreso();
+                }
+
             } else {
                 JOptionPane.showMessageDialog(null, "Capture Nombre ", "error", JOptionPane.ERROR_MESSAGE);
             }
         }
         if (e.getSource() == jDialogIngreso.jButtonCrearIngreso) {
-            
+
             if (!"".equals(jDialogIngreso.jTextFieldNombre.getText().trim())) {
                 Movimiento m = ingresoEgresoDao.getMovimiento(jDialogIngreso.jTextFieldNombre.getText().trim(), "ingreso");
-                if(m != null){
-                    
-                     JOptionPane.showMessageDialog(null, "Ingreso existente ", "error", JOptionPane.ERROR_MESSAGE);
+                if (m != null) {
+
+                    JOptionPane.showMessageDialog(null, "Ingreso existente ", "error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    crearMovimiento(jDialogIngreso.jTextFieldNombre.getText(), "ingreso");
+                    JOptionPane.showMessageDialog(null, "Tipo ingreso creado.", "Exito.", JOptionPane.INFORMATION_MESSAGE);
+                    jDialogIngreso.jTextFieldNombre.setText("");
+                    llenarComboIngreso();
                 }
-                else{
-                     crearMovimiento(jDialogIngreso.jTextFieldNombre.getText(), "ingreso");
-                JOptionPane.showMessageDialog(null, "Tipo ingreso creado.", "Exito.", JOptionPane.INFORMATION_MESSAGE);
-                jDialogIngreso.jTextFieldNombre.setText("");
-                llenarComboIngreso();
-                }
-               
-               
+
             } else {
                 JOptionPane.showMessageDialog(null, "Capture Nombre ", "error", JOptionPane.ERROR_MESSAGE);
             }
@@ -158,12 +155,7 @@ public class ControladorIngresoEgreso implements ActionListener, KeyListener {
                 jDialogEgreso.jPanelAltaEgreso.setVisible(true);
             }
         }
-//        if (e.getSource() == jpanelVentas.jButtonIngreso) {
-//            mostrarDialogIngreso();
-//        }
-//        if (e.getSource() == jpanelVentas.jButtonEgreso) {
-//            mostrarDialogEgreso();
-//        }
+
 
     }
 
@@ -275,26 +267,17 @@ public class ControladorIngresoEgreso implements ActionListener, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent ke) {
-       
+
     }
 
     @Override
     public void keyPressed(KeyEvent ke) {
-//       if(ke.getSource() == jpanelVentas.jTextFieldCodigoBarras ){
-//        if (ke.getKeyCode() == KeyEvent.VK_F3) {
-//                mostrarDialogIngreso();
-//
-//            }
-//         if (ke.getKeyCode() == KeyEvent.VK_F4) {
-//              mostrarDialogEgreso();
-//
-//            }
-//       }
+
     }
 
     @Override
     public void keyReleased(KeyEvent ke) {
-      
+
     }
 
 }

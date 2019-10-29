@@ -26,6 +26,7 @@ import vista.reporte.JPanelReporteIngreso;
  *
  * @author mq12
  */
+
 public class ControladorMostrarEgresos implements ActionListener {
 
     private Fechas fechas = new Fechas();
@@ -38,7 +39,7 @@ public class ControladorMostrarEgresos implements ActionListener {
     private Date desde;
     private Date hasta;
 
-    public ControladorMostrarEgresos(Principal vistaPrincipal, JPanelReportes jpanelReportes,  JPanelReporteEgreso jPanelReporteEgreso, JDialogEgreso jDialogEgreso) {
+    public ControladorMostrarEgresos(Principal vistaPrincipal, JPanelReportes jpanelReportes, JPanelReporteEgreso jPanelReporteEgreso, JDialogEgreso jDialogEgreso) {
         this.jDialogEgreso = jDialogEgreso;
         this.vistaPrincipal = vistaPrincipal;
         this.jpanelReportes = jpanelReportes;
@@ -47,7 +48,7 @@ public class ControladorMostrarEgresos implements ActionListener {
         this.jPanelReporteEgreso.jButtonBuscar.addActionListener(this);
         this.jPanelReporteEgreso.jButtonDiaAnterior.addActionListener(this);
         this.jPanelReporteEgreso.jButtonHoy.addActionListener(this);
-        
+
         this.jPanelReporteEgreso.jDateChooserDesde.setDate(new Date());
         this.jPanelReporteEgreso.jDateChooserHasta.setDate(new Date());
         this.jPanelReporteEgreso.jButtonCapturarEgreso.addActionListener(this);
@@ -55,9 +56,9 @@ public class ControladorMostrarEgresos implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-        if(e.getSource() == jPanelReporteEgreso.jButtonCapturarEgreso){
-         mostrarDialogEgreso();
+
+        if (e.getSource() == jPanelReporteEgreso.jButtonCapturarEgreso) {
+            mostrarDialogEgreso();
         }
         if (e.getSource() == jPanelReporteEgreso.jButtonHoy) {
             hoy();
@@ -75,7 +76,7 @@ public class ControladorMostrarEgresos implements ActionListener {
                 jPanelReporteEgreso.jTableEgresos.setModel(llenarTablaIngreso());
                 jPanelReporteEgreso.jLabelEgreso.setText("Egresos del dia " + fechas.rangoFecha(jPanelReporteEgreso.jDateChooserDesde.getDate(), jPanelReporteEgreso.jDateChooserHasta.getDate()));
                 jPanelReporteEgreso.jLabelTotal.setText("" + ingresoEgresoDao.getSumaEgresos(jPanelReporteEgreso.jDateChooserDesde.getDate(), jPanelReporteEgreso.jDateChooserHasta.getDate()));
-               // ingresoEgresoDao.cerrar();
+                // ingresoEgresoDao.cerrar();
             } catch (Exception ex) {
                 Logger.getLogger(ControladorMostrarEgresos.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -88,7 +89,7 @@ public class ControladorMostrarEgresos implements ActionListener {
 
     public void show() {
         try {
-         
+
             jpanelReportes.jPanelPrincipal.removeAll();
             jpanelReportes.jPanelPrincipal.setLayout(new java.awt.BorderLayout());
             jpanelReportes.jPanelPrincipal.add(jPanelReporteEgreso);
@@ -112,12 +113,12 @@ public class ControladorMostrarEgresos implements ActionListener {
             }
         };
 
-        String[] columnNames = {"ID","FECHA", "MOVIMIENTO", "DESCRIPCION", "CANTIDAD"};
+        String[] columnNames = {"ID", "FECHA", "MOVIMIENTO", "DESCRIPCION", "CANTIDAD"};
         tableModel.setColumnIdentifiers(columnNames);
         Object[] fila = new Object[tableModel.getColumnCount()];
 
         for (int i = 0; i < listaEgreso.size(); i++) {
-             fila[0] = listaEgreso.get(i).getId();
+            fila[0] = listaEgreso.get(i).getId();
             fila[1] = listaEgreso.get(i).getFecha();
             fila[2] = listaEgreso.get(i).getNombre();
             fila[3] = listaEgreso.get(i).getDescripcion();
@@ -136,7 +137,7 @@ public class ControladorMostrarEgresos implements ActionListener {
         jPanelReporteEgreso.jTableEgresos.setModel(llenarTablaIngreso());
         jPanelReporteEgreso.jLabelEgreso.setText("Egresos del dia " + fechas.fecha(hasta));
         jPanelReporteEgreso.jLabelTotal.setText("" + ingresoEgresoDao.getSumaEgresos(desde, hasta));
-       // ingresoEgresoDao.cerrar();
+        // ingresoEgresoDao.cerrar();
         fechas.ayer--;
     }
 
@@ -147,7 +148,7 @@ public class ControladorMostrarEgresos implements ActionListener {
             listaEgreso = ingresoEgresoDao.getEgresos(new Date(), new Date());
             jPanelReporteEgreso.jLabelTotal.setText("" + ingresoEgresoDao.getSumaEgresos(new Date(), new Date()));
             jPanelReporteEgreso.jTableEgresos.setModel(llenarTablaIngreso());
-           // ingresoEgresoDao.cerrar();
+            // ingresoEgresoDao.cerrar();
         } catch (Exception ex) {
             Logger.getLogger(ControladorMostrarEgresos.class.getName()).log(Level.SEVERE, null, ex);
         }

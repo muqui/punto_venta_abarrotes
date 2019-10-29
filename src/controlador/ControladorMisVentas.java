@@ -5,16 +5,20 @@
  */
 package controlador;
 
-import dao.VentaDao;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Properties;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import modelo.Tventadetalle;
 import vista.Principal;
 import vista.reporte.JPanelMisVentas;
@@ -28,7 +32,8 @@ public class ControladorMisVentas implements ActionListener {
     Principal vistaPrincipal;
     JPanelMisVentas jpanelMisVentas;
     private List<Tventadetalle> listaventas;
-    VentaDao ventaDao = new VentaDao();
+    // MisVentasDao misVentasDao = new MisVentasDao();
+
     public ControladorMisVentas(Principal vistaPrincipal, JPanelMisVentas jpanelMisVentas) {
         this.vistaPrincipal = vistaPrincipal;
         this.jpanelMisVentas = jpanelMisVentas;
@@ -40,31 +45,84 @@ public class ControladorMisVentas implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == vistaPrincipal.jButtonMisVentas) {
             show();
-            System.out.println("mis cventaa sssssssssssssssssss" + vistaPrincipal.usuario.getNombre() +  " " +vistaPrincipal.usuario.getNivel());
+
         }
 
     }
 
     public void show() {
+        BigDecimal total = new BigDecimal("0.00");
+        DefaultTableModel tableModel = new DefaultTableModel() {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
         try {
+            Properties prop = new Properties();
+           //InputStream input =getClass().getClassLoader().getResourceAsStream("hibernate.properties");
+            InputStream input = new FileInputStream("hibernate.properties");
+            prop.load(input);
+            
+            System.out.println("mis ventas .........................................");
+
+            String[] columnNames = {"ID VENTA", "FECHA", "CODIGO", "NOMBRE", "DEPARTAMENTO", "USUARIO", "CANTIDAD", "PRECIO", "COSTO TOTAL PROVEEDOR", "TOTAL"};
+            tableModel.setColumnIdentifiers(columnNames);
+
             vistaPrincipal.jPanelPanelPrincipal.removeAll();
             vistaPrincipal.jPanelPanelPrincipal.setLayout(new java.awt.BorderLayout());
             vistaPrincipal.jPanelPanelPrincipal.add(jpanelMisVentas);
             vistaPrincipal.jPanelPanelPrincipal.validate();
             vistaPrincipal.jPanelPanelPrincipal.repaint();
-            //muestra panel nuevo producto
 
-            listaventas = ventaDao.getVentasDetalle(new Date(), new Date(), vistaPrincipal.usuario.getNombre(), "");
-             BigDecimal ventas = ventaDao.getVentas(new Date(), new Date(), vistaPrincipal.usuario.getNombre(), "");
-             jpanelMisVentas.jLabelTotalVentas.setText("" + ventas);
-             jpanelMisVentas.jTableVentasDetalle.setModel(llenartabla());
+            //muestra panel nuevo producto
+            System.out.println("mis ventas ......................................... repaint");
+            String clase = prop.getProperty("hibernate.connection.driver_class");
+            Class.forName(clase);   // Class.forName("com.mysql.jdbc.Driver");
+            // Establecemos la conexión con la base de datos. 
+            String url = prop.getProperty("hibernate.connection.url");
+            String user = prop.getProperty("hibernate.connection.username");
+            String password = prop.getProperty("hibernate.connection.password");
+             Connection conexion = DriverManager.getConnection(url,user,password); //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/puntoventa", "root", "Fedora12");
+            // Preparamos la consulta 
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
+            String i = df.format(new Date());
+            String f = df.format(new Date());
+            Statement s = conexion.createStatement();
+            System.out.println("usuario " + vistaPrincipal.usuario.getNombre() );
+            String consultaSql = "select d.idVenta,v.fechaRegistro, d.codigoBarrasProducto, d.nombreProducto, dep.nombre, u.nombre, d.cantidad, d.precioventaUnitarioProducto, d.precioproveedor, d.totalprecioventa  from tventadetalle d inner join tventa v  on v.idventa = d.idventa inner join tproducto p on p.idproducto = d.idproducto inner join departamento dep on p.categoria_id = dep.id inner join usuario u on u.id = v.usuario_id  where u.nombre = '" + vistaPrincipal.usuario.getNombre() + "' and v.fecharegistro >='" + i + " 00:00:00' and v.fecharegistro <='" + f + " 23:59:59' and d.imprimir = 1 ORDER BY v.fechaRegistro desc";
+            System.out.println("sentencia " + consultaSql);
+            ResultSet rs = s.executeQuery(consultaSql);
+            // Recorremos el resultado, mientras haya registros para leer, y escribimos el resultado en pantalla. 
+            total = new BigDecimal("0.00");
+            Object[] fila = new Object[tableModel.getColumnCount()];
+            while (rs.next()) {
+                fila[0] = "" + rs.getInt(1);
+                fila[1] = "" + rs.getString(2);
+                fila[2] = "" + rs.getString(3);
+                fila[3] = "" + rs.getString(4);
+                fila[4] = "" + rs.getString(5);
+                fila[5] = "" + rs.getString(6);
+                fila[6] = "" + rs.getString(7);
+                fila[7] = "" + rs.getString(8);
+                fila[8] = "" + rs.getString(9);
+                fila[9] = "" + rs.getBigDecimal(10);
+                total = total.add(rs.getBigDecimal(10));
+                System.out.println("suma total " + total);
+                tableModel.addRow(fila);
+            }
+            // Cerramos la conexion a la base de datos. 
+            conexion.close();
         } catch (Exception ex) {
-            Logger.getLogger(ControladorInventario.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("error " + ex);
+            // Logger.getLogger(ControladorInventario.class.getName()).log(Level.SEVERE, null, ex);
         }
+        jpanelMisVentas.jTableVentasDetalle.setModel(tableModel);
+        jpanelMisVentas.jLabelTotalVentas.setText("" + total);
 
     }
-
-   
 
     private DefaultTableModel llenartabla() {
 

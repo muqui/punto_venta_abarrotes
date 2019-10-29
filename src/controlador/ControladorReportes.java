@@ -5,8 +5,7 @@
  */
 package controlador;
 
-import dao.DepartamentoDao;
-import dao.UsuarioDao;
+import dao.ReporteDao;
 import dao.VentaDao;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,9 +34,8 @@ public class ControladorReportes implements ActionListener {
     JPanelReportes jpanelReportes;
     JPanelReporteVentas jPanelReporteVentas;
     private List<Tventadetalle> listaventas;
-    DepartamentoDao departamentodao = new DepartamentoDao();
+    ReporteDao reporteDao = new ReporteDao();
     VentaDao ventaDao = new VentaDao();
-    UsuarioDao usuarioDao = new UsuarioDao();
 
     public ControladorReportes(Principal vistaPrincipal, JPanelReportes jpanelReportes, JPanelReporteVentas jPanelReporteVentas) {
         this.vistaPrincipal = vistaPrincipal;
@@ -55,10 +53,9 @@ public class ControladorReportes implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == vistaPrincipal.jButtonReporte || e.getSource() == jpanelReportes.jButtonVentas) {
-            if(vistaPrincipal.usuario.getNivel() == 0){
-                 show();
-            }
-           else{
+            if (vistaPrincipal.usuario.getNivel() == 0) {
+                show();
+            } else {
                 JOptionPane.showMessageDialog(null, "No tienes los permisos para acceder", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -87,14 +84,13 @@ public class ControladorReportes implements ActionListener {
             jPanelReporteVentas.jDateChooserDesde.setDate(new Date());
             jPanelReporteVentas.jDateChooserHasta.setDate(new Date());
 
-            listaventas = ventaDao.getVentasDetalle(new Date(), new Date(), "", "");
-
-            BigDecimal ventas = ventaDao.getVentas(new Date(), new Date(), "", "");
-            BigDecimal costo = ventaDao.getPrecioProveedorTotal(new Date(), new Date(), "", "");
+            BigDecimal ventas = reporteDao.getVentas(new Date(), new Date(), "", "", "totalprecioventa");
+            BigDecimal costo = reporteDao.getVentas(new Date(), new Date(), "", "", "d.precioProveedor");
+            System.out.println("costo  " + costo);
             jPanelReporteVentas.jLabelGanaciaTotal.setText("Ganancia Total: $ " + ventas.subtract(costo));
             jPanelReporteVentas.jLabelTotalVentas.setText("" + ventas);
-            jPanelReporteVentas.jTableVentasDetalle.setModel(llenartabla());
-            ventaDao.cerrar();
+            jPanelReporteVentas.jTableVentasDetalle.setModel(reporteDao.getVentasDetalle(new Date(), new Date(), "", ""));
+
         } catch (Exception ex) {
             Logger.getLogger(ControladorReportes.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -106,7 +102,7 @@ public class ControladorReportes implements ActionListener {
             jPanelReporteVentas.jComboBoxDepartamento.setModel(new DefaultComboBoxModel());
 
             List<Departamento> departamentos;
-            departamentos = departamentodao.getDepartamento();
+            departamentos = reporteDao.getDepartamento();
             jPanelReporteVentas.jComboBoxDepartamento.addItem("Todos los departamentos");
             for (int i = 0; i < departamentos.size(); i++) {
 
@@ -122,7 +118,7 @@ public class ControladorReportes implements ActionListener {
     private void llenarComboUsuario() {
         jPanelReporteVentas.jComboBoxUsuario.setModel(new DefaultComboBoxModel());
         List<Usuario> usuarios;
-        usuarios = usuarioDao.getUsuarios();
+        usuarios = reporteDao.getUsuarios();
         jPanelReporteVentas.jComboBoxUsuario.addItem("Todos los usuarios");
         for (int i = 0; i < usuarios.size(); i++) {
             jPanelReporteVentas.jComboBoxUsuario.addItem("" + usuarios.get(i).getNombre());
@@ -130,38 +126,6 @@ public class ControladorReportes implements ActionListener {
 
     }
 
-    private DefaultTableModel llenartabla() {
-
-        DefaultTableModel tableModel = new DefaultTableModel() {
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                //all cells false
-                return false;
-            }
-        };
-
-        String[] columnNames = {"ID VENTA", "FECHA", "CODIGO", "NOMBRE", "DEPARTAMENTO", "USUARIO", "CANTIDAD", "PRECIO", "COSTO TOTAL PROVEEDOR", "TOTAL"};
-        tableModel.setColumnIdentifiers(columnNames);
-        Object[] fila = new Object[tableModel.getColumnCount()];
-
-        for (int i = 0; i < listaventas.size(); i++) {
-            fila[0] = listaventas.get(i).getTventa().getIdVenta();
-            fila[1] = listaventas.get(i).getTventa().getFechaRegistro();
-            fila[2] = listaventas.get(i).getCodigoBarrasProducto();
-            fila[3] = listaventas.get(i).getNombreProducto();
-            fila[4] = listaventas.get(i).getTproducto().getDepartamento().getNombre();
-            fila[5] = listaventas.get(i).getTventa().getUsuario().getNombre();
-            fila[6] = listaventas.get(i).getCantidad();
-            fila[7] = listaventas.get(i).getPrecioVentaUnitarioProducto();
-            fila[8] = listaventas.get(i).getPrecioProveedor();
-            fila[9] = listaventas.get(i).getTotalPrecioVenta();
-
-            tableModel.addRow(fila);
-
-        }
-        return tableModel;
-    }
 
     private void reporteTotalVentas() {
         try {
@@ -174,17 +138,20 @@ public class ControladorReportes implements ActionListener {
             if (categoria.equals("Todos los departamentos")) {
                 categoria = "";
             }
-            listaventas = ventaDao.getVentasDetalle(jPanelReporteVentas.jDateChooserDesde.getDate(), jPanelReporteVentas.jDateChooserHasta.getDate(), usuario, categoria);
-            BigDecimal ventas = ventaDao.getVentas(jPanelReporteVentas.jDateChooserDesde.getDate(), jPanelReporteVentas.jDateChooserHasta.getDate(), usuario, categoria);
-            BigDecimal costo = ventaDao.getPrecioProveedorTotal(jPanelReporteVentas.jDateChooserDesde.getDate(), jPanelReporteVentas.jDateChooserHasta.getDate(), usuario, categoria);
 
+            jPanelReporteVentas.jTableVentasDetalle.setModel(reporteDao.getVentasDetalle(jPanelReporteVentas.jDateChooserDesde.getDate(), jPanelReporteVentas.jDateChooserHasta.getDate(), usuario, categoria));
+
+            BigDecimal ventas = reporteDao.getVentas(jPanelReporteVentas.jDateChooserDesde.getDate(), jPanelReporteVentas.jDateChooserHasta.getDate(),usuario, categoria, "totalprecioventa");
+            BigDecimal costo = reporteDao.getVentas(jPanelReporteVentas.jDateChooserDesde.getDate(), jPanelReporteVentas.jDateChooserHasta.getDate(), usuario,categoria, "d.precioProveedor");
+      
+            jPanelReporteVentas.jLabelGanaciaTotal.setText("Ganancia Total: $ " + ventas.subtract(costo));
             jPanelReporteVentas.jLabelTotalVentas.setText("" + ventas);
-            System.out.println("total costo proveedor" + costo);
-            jPanelReporteVentas.jLabelGanaciaTotal.setText("Ganancia Total: " + ventas.subtract(costo));
-            jPanelReporteVentas.jTableVentasDetalle.setModel(llenartabla());
-            ventaDao.cerrar();
+
+
+            System.out.println("CORONA NAVARRO DETALLE");
         } catch (Exception ex) {
             Logger.getLogger(ControladorReportes.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }

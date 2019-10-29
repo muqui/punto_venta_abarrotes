@@ -11,13 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
-import modelo.ContenidoPaquete;
-import modelo.Departamento;
-import modelo.Formadepago;
 import modelo.Tproducto;
 import modelo.Tventa;
 import modelo.Tventadetalle;
-import modelo.Usuario;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -27,11 +23,11 @@ import org.hibernate.Transaction;
  * @author mq12
  */
 public class EliminarVentaDao {
- Session session;
-  
+
+    Session session;
 
     public void eliminarVenta1(int idVenta) {
-          Session session = HibernateUtil.getSessionFactory().openSession();
+        session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
         String i = df.format(new Date());
@@ -42,7 +38,7 @@ public class EliminarVentaDao {
             List<Tventadetalle> productosPorNombre = (List<Tventadetalle>) query.list();
 
             for (Tventadetalle p : productosPorNombre) {
-                System.out.println("cantidadx  " + p.getCantidad() +  "id= " + p.getTproducto().getDescripcion());
+                System.out.println("cantidadx  " + p.getCantidad() + "id= " + p.getTproducto().getDescripcion());
                 hql = "from Tproducto where idProducto=:idProducto";
                 query = session.createQuery(hql);
                 query.setParameter("idProducto", p.getTproducto().getIdProducto());
@@ -50,7 +46,7 @@ public class EliminarVentaDao {
                 System.out.println("cantidad stock " + product0.getCantidad());
                 BigDecimal cantidad = product0.getCantidad().add(p.getCantidad());
                 System.out.println("");
-                System.out.println("cantidad " +cantidad + " producto codido de barras  " + product0.getCodigoBarras());
+                System.out.println("cantidad " + cantidad + " producto codido de barras  " + product0.getCodigoBarras());
                 product0.setCantidad(cantidad);
                 session.update(product0);
 
@@ -61,6 +57,7 @@ public class EliminarVentaDao {
             query = session.createQuery(hql);
             query.setParameter("idVenta", idVenta);
             Tventa venta = (Tventa) query.uniqueResult();
+            System.out.println("venta a aeliminnar HOy " + venta);
             if (venta != null) {
                 System.out.println("resultado MUQUI " + venta.getIdVenta());
                 hql = "delete Tventadetalle as t  where t.tventa.idVenta = :idVenta";
@@ -81,18 +78,20 @@ public class EliminarVentaDao {
                 JOptionPane.showMessageDialog(null, "Producto " + idVenta + " Eliminado.");
             } else {
 
-                JOptionPane.showMessageDialog(null, "Error al eliminar producto: \n", "error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error al eliminar producto: 27/06/2018:  \n", "error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al eliminar producto: \n" + e, "error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("error eliminar venta " + e);
+            JOptionPane.showMessageDialog(null, "Error al eliminar producto \n" + e, "error", JOptionPane.ERROR_MESSAGE);
             transaction.rollback();
         }
 
         transaction.commit();
 
     }
-    public void cerrar(){
-     session.close();
+
+    public void cerrar() {
+        session.close();
     }
 
 }

@@ -29,12 +29,14 @@ public class ControladorAltaUsuario implements ActionListener {
     JPanelConfiguracion jPanelConfiguracion;
     JPanelAltaUsuario jPanelAltaUsuario;
     UsuarioDao usuarioDao = new UsuarioDao();
-      Usuario altausuario = new Usuario();
+    Usuario altausuario = new Usuario();
+
     public ControladorAltaUsuario(Principal vistaPrincipal, JPanelConfiguracion jPanelConfiguracion, JPanelAltaUsuario jPanelAltaUsuario) {
         this.vistaPrincipal = vistaPrincipal;
         this.jPanelConfiguracion = jPanelConfiguracion;
         this.jPanelAltaUsuario = jPanelAltaUsuario;
         this.vistaPrincipal.jButtonConfiguracion.addActionListener(this);
+        this.jPanelConfiguracion.jButtonAltaUsuario.addActionListener(this);
         this.jPanelAltaUsuario.jButtonCrear.addActionListener(this);
         limpiarCampoError();
     }
@@ -42,17 +44,16 @@ public class ControladorAltaUsuario implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == jPanelAltaUsuario.jButtonCrear) {
-           if(validarFormulario()){
-               crearUsuario();
-           }
-            
-        }
-        if (e.getSource() == vistaPrincipal.jButtonConfiguracion) {
-           if(vistaPrincipal.usuario.getNivel() == 0){
-                 show();
+            if (validarFormulario()) {
+                crearUsuario();
             }
-           else{
-              // UIManager.put("OptionPane.minimumSize",new Dimension(500,500)); 
+
+        }
+        if (e.getSource() == vistaPrincipal.jButtonConfiguracion || e.getSource() == jPanelConfiguracion.jButtonAltaUsuario ) {
+            if (vistaPrincipal.usuario.getNivel() == 0) {
+                show();
+            } else {
+                // UIManager.put("OptionPane.minimumSize",new Dimension(500,500)); 
                 JOptionPane.showMessageDialog(null, "No tienes los permisos para acceder.", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -76,7 +77,7 @@ public class ControladorAltaUsuario implements ActionListener {
 
     private boolean validarFormulario() {
         boolean bandera = true;
-      
+
         try {
 
             limpiarCampoError();
@@ -97,10 +98,9 @@ public class ControladorAltaUsuario implements ActionListener {
             //CONTRASEÑA
             if (!"".equals(jPanelAltaUsuario.jPasswordFieldContrasena.getText().trim())) {
                 if (jPanelAltaUsuario.jPasswordFieldContrasena.getText().length() < 8) {
-                     bandera = false;
-                      jPanelAltaUsuario.jLabelErrorContrasena.setText("se requiere 8 caracteres");
-                }
-                else{
+                    bandera = false;
+                    jPanelAltaUsuario.jLabelErrorContrasena.setText("se requiere 8 caracteres");
+                } else {
                     // usuario.setPassword(Encryption.encrypt(jPanelAltaUsuario.jPasswordFieldContrasena.getText().trim()));
                     altausuario.setPassword(Encryption.encrypt(jPanelAltaUsuario.jPasswordFieldContrasena.getText().trim()));
                 }
@@ -110,10 +110,9 @@ public class ControladorAltaUsuario implements ActionListener {
                 jPanelAltaUsuario.jLabelErrorContrasena.setText("capture una contraseña");
             }
             //CONFIRMAR
-            if(!jPanelAltaUsuario.jPasswordFieldContrasena.getText().equals(jPanelAltaUsuario.jPasswordFieldConfirmar.getText())){
-             jPanelAltaUsuario.jLabelErrorConfirmar.setText("Las contraseñas con coinciden.");
+            if (!jPanelAltaUsuario.jPasswordFieldContrasena.getText().equals(jPanelAltaUsuario.jPasswordFieldConfirmar.getText())) {
+                jPanelAltaUsuario.jLabelErrorConfirmar.setText("Las contraseñas con coinciden.");
             }
-           
 
         } catch (Exception ex) {
             Logger.getLogger(ControladorAltaUsuario.class.getName()).log(Level.SEVERE, null, ex);
@@ -134,11 +133,11 @@ public class ControladorAltaUsuario implements ActionListener {
         try {
             altausuario.setNivel(jPanelAltaUsuario.jComboBoxNivel.getSelectedIndex());
             usuarioDao.addUser(altausuario);
-           JOptionPane.showMessageDialog (null, "Usuario creado.", "Exito.", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Usuario creado.", "Exito.", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
             Logger.getLogger(ControladorAltaUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
 }

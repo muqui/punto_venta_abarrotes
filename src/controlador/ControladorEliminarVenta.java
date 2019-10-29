@@ -40,13 +40,13 @@ public class ControladorEliminarVenta implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == jPanelReporteVentas.jButtonEliminarVenta) {
-             jDialogEliminarVenta.setLocationRelativeTo(null);
+            jDialogEliminarVenta.setLocationRelativeTo(null);
             jDialogEliminarVenta.setVisible(true);
         }
         if (e.getSource() == jDialogEliminarVenta.jButtonEliminar) {
             eliminarVentaDao.eliminarVenta1(Integer.parseInt(jDialogEliminarVenta.jTextFieldIDventa.getText().trim()));
             jDialogEliminarVenta.setVisible(false);
-          
+
             vistaPrincipal.jButtonReporte.doClick();
         }
 

@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package dao;
-
 import hibernate.HibernateUtil;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -17,12 +16,12 @@ import modelo.Movimiento;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 /**
  *
  * @author mq12
  */
-public class IngresoEgresoDao {
+
+    public class IngresoEgresoDao {
 
     Session session;
     Transaction transaction;
@@ -31,6 +30,7 @@ public class IngresoEgresoDao {
         session = HibernateUtil.getSessionFactory().openSession();
         transaction = this.session.beginTransaction();
         session.save(movimiento);
+      
         transaction.commit();
         session.close();
     }
@@ -40,7 +40,8 @@ public class IngresoEgresoDao {
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             transaction = this.session.beginTransaction();
-            session.save(ingreso);
+           
+           session.save(ingreso);
             transaction.commit();
             session.close();
         } catch (Exception e) {
@@ -65,11 +66,13 @@ public class IngresoEgresoDao {
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             transaction = this.session.beginTransaction();
+          
             session.save(egreso);
             transaction.commit();
             session.close();
         } catch (Exception e) {
             bandera = false;
+            System.out.println("Error al crear egreso " +  e);
         }
 
         return bandera;
@@ -227,3 +230,4 @@ public class IngresoEgresoDao {
         return r;
     }
 }
+

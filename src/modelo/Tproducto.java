@@ -27,6 +27,11 @@ import javax.persistence.UniqueConstraint;
 )
 public class Tproducto  implements java.io.Serializable {
 
+    @Override
+    public String toString() {
+        return "Tproducto{" + "idProducto=" + idProducto + ", codigoBarras=" + codigoBarras + ", nombre=" + nombre + ", precioVentaUnitario=" + precioVentaUnitario + ", cantidad=" + cantidad + ", descripcion=" + descripcion + ", precioProveedor=" + precioProveedor + ", precioMayoreo=" + precioMayoreo + ", comosevende=" + comosevende + ", inventariar=" + inventariar + ", minimo=" + minimo + ", iva=" + iva + ", ieps=" + ieps + '}';
+    }
+
 
      private Integer idProducto;
      private Departamento departamento;

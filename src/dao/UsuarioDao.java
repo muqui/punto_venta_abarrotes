@@ -25,8 +25,8 @@ public class UsuarioDao {
         session = HibernateUtil.getSessionFactory().openSession();
         transaction = this.session.beginTransaction();
         session.save(usuario);
-         transaction.commit();
-           session.close();
+        transaction.commit();
+        session.close();
     }
 
     public List<Usuario> getUsuarios() {
@@ -35,48 +35,30 @@ public class UsuarioDao {
         transaction = this.session.beginTransaction();
         users = session.createCriteria(Usuario.class).list();
         transaction.commit();
-          session.close();
+        session.close();
         return users;
     }
-    public Usuario login(String usuario, String password) throws Exception {
-        Usuario u = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
-            String hql = "FROM Usuario WHERE nombre = '" + usuario
-                    + "' and password = '" + password + "'";
-            Query query = session.createQuery(hql);
-            if (!query.list().isEmpty()) {
-                u = (Usuario) query.list().get(0);
-            }
-            transaction.commit();
-           
-        } catch (Exception e) {
-            throw e;
-        }finally{
-         session.close();
-        }
-        return u;
-    }
-      public Usuario getUsuarioXnombre(String usuario) throws Exception {
-        Usuario u = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
-            String hql = "FROM Usuario WHERE nombre = '" + usuario +  "'";
-            Query query = session.createQuery(hql);
-            if (!query.list().isEmpty()) {
-                u = (Usuario) query.list().get(0);
-            }
-            transaction.commit();
-           
-        } catch (Exception e) {
-            throw e;
-        }finally{
-         session.close();
-        }
-        return u;
-    }
 
+  
+
+    public Usuario getUsuarioXnombre(String usuario) throws Exception {
+        Usuario u = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+            String hql = "FROM Usuario WHERE nombre = '" + usuario + "'";
+            Query query = session.createQuery(hql);
+            if (!query.list().isEmpty()) {
+                u = (Usuario) query.list().get(0);
+            }
+            transaction.commit();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            session.close();
+        }
+        return u;
+    }
 
 }

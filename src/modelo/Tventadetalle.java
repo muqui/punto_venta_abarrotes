@@ -78,7 +78,7 @@ public class Tventadetalle  implements java.io.Serializable {
         this.idVentaDetalle = idVentaDetalle;
     }
 
-@ManyToOne(fetch=FetchType.LAZY)
+@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="idProducto", nullable=false)
     public Tproducto getTproducto() {
         return this.tproducto;
@@ -88,7 +88,7 @@ public class Tventadetalle  implements java.io.Serializable {
         this.tproducto = tproducto;
     }
 
-@ManyToOne(fetch=FetchType.LAZY)
+@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="idVenta", nullable=false)
     public Tventa getTventa() {
         return this.tventa;

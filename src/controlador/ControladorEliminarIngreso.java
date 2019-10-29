@@ -13,12 +13,9 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import modelo.Egreso;
 import modelo.Fechas;
-import vista.JDialogEgreso;
 import vista.JPanelReportes;
 import vista.Principal;
-import vista.reporte.JDialogEliminarEgreso;
 import vista.reporte.JDialogEliminarIngreso;
-import vista.reporte.JPanelReporteEgreso;
 import vista.reporte.JPanelReporteIngreso;
 
 /**
@@ -38,7 +35,7 @@ public class ControladorEliminarIngreso implements ActionListener {
     private Date desde;
     private Date hasta;
 
-    public ControladorEliminarIngreso(Principal vistaPrincipal, JPanelReportes jpanelReportes, JPanelReporteIngreso jPanelReporteIngreso,  JDialogEliminarIngreso jDialogEliminarIngreso) {
+    public ControladorEliminarIngreso(Principal vistaPrincipal, JPanelReportes jpanelReportes, JPanelReporteIngreso jPanelReporteIngreso, JDialogEliminarIngreso jDialogEliminarIngreso) {
         this.jDialogEliminarIngreso = jDialogEliminarIngreso;
         this.vistaPrincipal = vistaPrincipal;
         this.jpanelReportes = jpanelReportes;

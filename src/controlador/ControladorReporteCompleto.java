@@ -4,9 +4,9 @@
  * and open the template in the editor.
  */
 package controlador;
-
-import dao.DepartamentoDao;
+//import dao.DepartamentoDao;
 import dao.IngresoEgresoDao;
+import dao.ReporteCompletoDao;
 import dao.VentaDao;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,7 +24,6 @@ import modelo.Reporte;
 import vista.JPanelReportes;
 import vista.Principal;
 import vista.reporte.JPanelReporteCompleto;
-
 /**
  *
  * @author mq12
@@ -35,8 +34,8 @@ public class ControladorReporteCompleto implements ActionListener {
     JPanelReportes jpanelReportes;
     JPanelReporteCompleto jPanelReporteCompleto;
     IngresoEgresoDao ingresoEgresoDao = new IngresoEgresoDao();
-    DepartamentoDao departamentoDao = new DepartamentoDao();
-    VentaDao ventaDao = new VentaDao();
+   
+    ReporteCompletoDao reporteCompletoDao = new ReporteCompletoDao();
     Date desde = new Date();
     Date hasta = new Date();
 
@@ -81,7 +80,7 @@ public class ControladorReporteCompleto implements ActionListener {
                 return false;
             }
         };
-        List<Departamento> departamento = departamentoDao.getDepartamento();
+        List<Departamento> departamento = reporteCompletoDao.getDepartamento();
         List<Movimiento> ingreso = ingresoEgresoDao.getMovimientos("ingreso");
         List<Movimiento> egreso = ingresoEgresoDao.getMovimientos("egreso");
         List<Reporte> reporte = new ArrayList<>();
@@ -121,7 +120,7 @@ public class ControladorReporteCompleto implements ActionListener {
                 } else {
                     r.setIngreso(departamento.get(i - contadorDepartamento).getNombre());
                    
-                    r.setCantidadIngreso(ventaDao.getVentasTotalModificado(desde, hasta, "", r.getIngreso()));
+                    r.setCantidadIngreso(reporteCompletoDao.getVentasTotalModificado(desde, hasta, "", r.getIngreso()));
                     System.out.println("alex1 " +r.getIngreso() +  " " + r.getCantidadIngreso());
                     for (int j = 0; j < egreso.size(); j++) {
                         if (r.getIngreso().equalsIgnoreCase(egreso.get(j).getNombre())) {
@@ -153,9 +152,9 @@ public class ControladorReporteCompleto implements ActionListener {
             re.setTotal(re.getCantidadIngreso().subtract(re.getCantidadEgreso()));
             fila[4] = re.getTotal();
 
-            // System.out.println("" + productos.get(i).getDepartamento().getNombre());
+            
             tableModel.addRow(fila);
-            // System.out.println("Ingreso " + re.getIngreso() + " cantidad " + re.getCantidadIngreso() + " Egreso " + re.getEgreso() + " total " + re.getTotal());
+            
         }
 
         return tableModel;
@@ -168,7 +167,7 @@ public class ControladorReporteCompleto implements ActionListener {
             BigDecimal total = new BigDecimal("0.00");
             BigDecimal ingreso = ingresoEgresoDao.getSumaIngresos(desde, hasta);
             BigDecimal egreso = ingresoEgresoDao.getSumaEgresos(desde, hasta);
-            BigDecimal ventas = ventaDao.getVentas(desde, hasta, "", "");
+            BigDecimal ventas = reporteCompletoDao.getVentas(desde, hasta, "", "");
             System.out.println("abcdefg j" + ventas);
             total = ingreso.add(ventas);
             total = total.subtract(egreso);

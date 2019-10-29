@@ -16,6 +16,7 @@ public class JPanelMisVentas extends javax.swing.JPanel {
      */
     public JPanelMisVentas() {
         initComponents();
+         jTableVentasDetalle.getTableHeader().setReorderingAllowed(false);
     }
 
     /**

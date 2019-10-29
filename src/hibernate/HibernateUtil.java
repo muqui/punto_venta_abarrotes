@@ -5,6 +5,8 @@
  */
 package hibernate;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.SessionFactory;
 
@@ -14,23 +16,42 @@ import org.hibernate.SessionFactory;
  *
  * @author mq12
  */
+
+import java.util.Properties;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AnnotationConfiguration;
+
 public class HibernateUtil {
 
-    private static final SessionFactory sessionFactory;
-    
-    static {
+private static final SessionFactory sessionFactory = buildSessionFactory();
+
+private static SessionFactory buildSessionFactory() {
+    try {
+
+        Properties dbConnectionProperties = new Properties();
         try {
-            // Create the SessionFactory from standard (hibernate.cfg.xml) 
-            // config file.
-            sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            // Log the exception. 
-            System.err.println("Initial SessionFactory creation failed." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
+           // dbConnectionProperties.load(HibernateUtil.class.getClassLoader().getSystemClassLoader().getResourceAsStream("hibernate.properties"));
+           InputStream is = new FileInputStream("hibernate.properties");
+           dbConnectionProperties.load(is);
+        } catch(Exception e) {
+            e.printStackTrace();
+            // Log
+        }           
+
+        return new AnnotationConfiguration().mergeProperties(dbConnectionProperties).configure("hibernate.cfg.xml").buildSessionFactory();          
+
+
+    } catch (Throwable ex) {
+        ex.printStackTrace();
+//            throw new ExceptionInInitializerError(ex);
     }
-    
-    public static SessionFactory getSessionFactory() {
-        return sessionFactory;
-    }
+    return null;
 }
+
+public static SessionFactory getSessionFactory() {
+    return sessionFactory;
+}
+
+}
+

@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controlador;
 
-import dao.DepartamentoDao;
-import dao.ProductoDao;
+
+import dao.InventarioDao;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -33,8 +28,8 @@ public class ControladorInventario implements ActionListener, ItemListener {
     JPanelInventario jPanelInventario;
     JPanelInventariolista JPanelInventariolista;
     List<Tproducto> productos;
-    ProductoDao productoDao = new ProductoDao();
-    DepartamentoDao departamentodao = new DepartamentoDao();
+    InventarioDao inventarioDao = new InventarioDao();
+  
 
     public ControladorInventario(Principal vistaPrincipal, JPanelInventario jPanelInventario, JPanelInventariolista JPanelInventariolista) {
         this.vistaPrincipal = vistaPrincipal;
@@ -55,7 +50,7 @@ public class ControladorInventario implements ActionListener, ItemListener {
 
     public void show() {
         try {
-            productos = productoDao.productosInventario();
+            productos = inventarioDao.productosInventario();
             vistaPrincipal.jPanelPanelPrincipal.removeAll();
             vistaPrincipal.jPanelPanelPrincipal.setLayout(new java.awt.BorderLayout());
             vistaPrincipal.jPanelPanelPrincipal.add(jPanelInventario);
@@ -68,7 +63,7 @@ public class ControladorInventario implements ActionListener, ItemListener {
             jPanelInventario.jPanelPrincipal.add(JPanelInventariolista);
             jPanelInventario.jPanelPrincipal.validate();
             jPanelInventario.jPanelPrincipal.repaint();
-            BigDecimal total = productoDao.totalInventario();
+            BigDecimal total = inventarioDao.totalInventario();
             total = total.setScale(2, BigDecimal.ROUND_HALF_EVEN);
             JPanelInventariolista.jLabelCostoInventario.setText("Costo del inventario " + total);
             JPanelInventariolista.jTableInvntario.setModel(llenarTabla());
@@ -120,8 +115,8 @@ public class ControladorInventario implements ActionListener, ItemListener {
         try {
             JPanelInventariolista.jComboBoxPorCategoria.setModel(new DefaultComboBoxModel());
             List<Departamento> departamentos;
-            departamentos = departamentodao.getDepartamento();
-             JPanelInventariolista.jComboBoxPorCategoria.addItem("todos los departamentos");
+            departamentos = inventarioDao.getDepartamento();
+            JPanelInventariolista.jComboBoxPorCategoria.addItem("todos los departamentos");
             for (int i = 0; i < departamentos.size(); i++) {
                 JPanelInventariolista.jComboBoxPorCategoria.addItem("" + departamentos.get(i).getNombre());
 
@@ -137,27 +132,26 @@ public class ControladorInventario implements ActionListener, ItemListener {
         BigDecimal total = null;
         if (e.getStateChange() == ItemEvent.SELECTED) {
             String seleccion = "" + JPanelInventariolista.jComboBoxPorCategoria.getSelectedItem();
-          //  System.out.println(" categoria" + seleccion);
+            //  System.out.println(" categoria" + seleccion);
             try {
-                if(seleccion.equalsIgnoreCase("todos los departamentos")){
-                      productos = productoDao.productosInventario();
-                      System.out.println(" SELECCIONSTA TODAS LAS CATEGORIAS" + seleccion);
-                        total = productoDao.totalInventario();
+                if (seleccion.equalsIgnoreCase("todos los departamentos")) {
+                    productos = inventarioDao.productosInventario();
+                    System.out.println(" SELECCIONSTA TODAS LAS CATEGORIAS" + seleccion);
+                    total = inventarioDao.totalInventario();
+                } else {
+                    productos = inventarioDao.productosInventario(seleccion);
+                    total = inventarioDao.totalInventario(seleccion);
                 }
-                else{
-                      productos = productoDao.productosInventario(seleccion);
-                        total = productoDao.totalInventario(seleccion);
-                }
-               
+
             } catch (Exception ex) {
                 Logger.getLogger(ControladorInventario.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             total = total.setScale(2, BigDecimal.ROUND_HALF_EVEN);
             JPanelInventariolista.jLabelCostoInventario.setText("Costo del inventario " + total);
             JPanelInventariolista.jTableInvntario.setModel(llenarTabla());
-            
-        }
 
+        }
+       
     }
 }

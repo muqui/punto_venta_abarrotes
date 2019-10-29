@@ -18,9 +18,22 @@ import org.hibernate.Transaction;
  * @author mq12
  */
 public class DepartamentoDao {
-        Session session;
+
+    Session session;
     Transaction transaction;
-      public boolean addDepartamento(Departamento departamento) {
+
+    public Departamento getDepartamento(String nombre) {
+        session = HibernateUtil.getSessionFactory().openSession();
+        String hql = "from Departamento where nombre=:nombre";
+
+        Query query = session.createQuery(hql);
+        query.setParameter("nombre", nombre);
+        
+        return (Departamento) query.uniqueResult();
+
+    }
+
+    public boolean addDepartamento(Departamento departamento) {
         boolean resultado = true;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -37,26 +50,9 @@ public class DepartamentoDao {
         }
         return resultado;
     }
-      
-       public Departamento getDepartamento(String nombre) {
-        session = HibernateUtil.getSessionFactory().openSession();
-        String hql = "from Departamento where nombre=:nombre";
-
-        Query query = session.createQuery(hql);
-        query.setParameter("nombre", nombre);
-        // session.close();
-        return (Departamento) query.uniqueResult();
-
-    }
-       
     
-    public List<Departamento> getDepartamento() throws Exception {
-         session = HibernateUtil.getSessionFactory().openSession();
-        String hql = "from Departamento ";
-        Query query = session.createQuery(hql);
-        
-        List<Departamento> productosPorNombre = (List<Departamento>) query.list();
-
-        return productosPorNombre;
-    }   
+    public void cerrar(){
+        session.close();
+    }
+    
 }
