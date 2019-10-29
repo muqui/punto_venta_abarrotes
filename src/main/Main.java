@@ -37,6 +37,7 @@ import controlador.ControladorProductosModificar;
 import controlador.ControladorReporteCompleto;
 import controlador.ControladorReportes;
 import modelo.RespaldoBaseDeDatos;
+import vista.CrearAdmin;
 import vista.JDialogEgreso;
 import vista.JDialogIngreso;
 import vista.JPanelInventario;
@@ -100,9 +101,10 @@ public class Main {
         JpanelProductoModificar jpanelProductoModificar = new JpanelProductoModificar();
         JDialogBuscarProductoModificar jDialogBuscarProductoModificar = new JDialogBuscarProductoModificar(vistaPrincipal, true);
         JDialogModificarPaquete jDialogModificarPaquete = new JDialogModificarPaquete(vistaPrincipal, true);
+        CrearAdmin crearAdmin = new CrearAdmin(vistaPrincipal, true);
         JpanelDepartamento jpanelDepartamento = new JpanelDepartamento();
         //CONTROLADOR
-        ControlerLogin controllerLogin = new ControlerLogin(vistaPrincipal, login, jpanelVentas);
+        ControlerLogin controllerLogin = new ControlerLogin(vistaPrincipal, login, jpanelVentas, crearAdmin);
         controllerLogin.iniciar();
         ControladorMisVentas controladorMisVentas = new ControladorMisVentas(vistaPrincipal, jpanelMisVentas);
         ControladorVender controladorVender = new ControladorVender(vistaPrincipal, jpanelVentas, jPanelTicket, jDialogVentaAgranel, jDialogMasDe1Producto, jDialogVentaFinal, jDialogBuscarProducto, jDialogVerificadorPrecios);

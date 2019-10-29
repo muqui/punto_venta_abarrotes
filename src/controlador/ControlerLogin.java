@@ -6,6 +6,7 @@
 package controlador;
 
 import dao.LoginDao;
+import dao.UsuarioDao;
 import encryption.Encryption;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import modelo.Usuario;
+import vista.CrearAdmin;
 import vista.JpanelVentas;
 import vista.Login;
 import vista.Principal;
@@ -30,12 +32,16 @@ public class ControlerLogin implements ActionListener, KeyListener {
     Login login;
     JpanelVentas jpanelVentas;
     Usuario usuario;
+    UsuarioDao usuarioDao = new UsuarioDao();
+    Usuario admin = new Usuario();
+    CrearAdmin crearAdmin;
     LoginDao loginDao;
 
-    public ControlerLogin(Principal vistaPrincipal, Login login, JpanelVentas jpanelVentas) {
+    public ControlerLogin(Principal vistaPrincipal, Login login, JpanelVentas jpanelVentas, CrearAdmin crearAdmin) {
         this.vistaPrincipal = vistaPrincipal;
         this.login = login;
         this.jpanelVentas = jpanelVentas;
+        this.crearAdmin = crearAdmin;
         usuario = new Usuario();
         loginDao = new LoginDao();
         this.login.jButtonAceptar.addActionListener(this);
@@ -45,6 +51,7 @@ public class ControlerLogin implements ActionListener, KeyListener {
         this.vistaPrincipal.jButtonVentas.addActionListener(this);
         this.login.jTextFieldUsuario.addKeyListener(this);
         this.login.jPasswordFieldPass.addKeyListener(this);
+        this.crearAdmin.jButtonCrear.addActionListener(this);
     }
 
     public void iniciar() {
@@ -57,10 +64,17 @@ public class ControlerLogin implements ActionListener, KeyListener {
 
         vistaPrincipal.setLocationRelativeTo(null);
         vistaPrincipal.setVisible(true);
+        /*Si usuarios es null se crea el primer usuario*/
+        if (loginDao.getUsers() == null) {
 
-        login.setLocationRelativeTo(null);
-        login.setVisible(true);
-       
+            crearAdmin.setLocationRelativeTo(null);
+            crearAdmin.setVisible(true);
+
+        } else {
+            login.setLocationRelativeTo(null);
+            login.setVisible(true);
+        }
+
     }
 
     private void login() {
@@ -103,6 +117,15 @@ public class ControlerLogin implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
+        if (arg0.getSource() == crearAdmin.jButtonCrear) {
+            if (validarFormulario()) {
+                crearAdmin();
+                 JOptionPane.showMessageDialog(null,"Usuario creado!", "Usuario", JOptionPane.INFORMATION_MESSAGE);
+                crearAdmin.setVisible(false);
+                iniciar();
+            }
+
+        }
         if (arg0.getSource() == login.jButtonAceptar) {
             login();
         }
@@ -128,26 +151,77 @@ public class ControlerLogin implements ActionListener, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent arg0) {
-       
+
     }
 
     @Override
     public void keyPressed(KeyEvent arg0) {
-        if (arg0.getSource() ==  login.jTextFieldUsuario || arg0.getSource() ==    login.jPasswordFieldPass) {
+        if (arg0.getSource() == login.jTextFieldUsuario || arg0.getSource() == login.jPasswordFieldPass) {
             if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-                 login();
+                login();
             }
-           
+
         }
-        
-      
-                
-                
+
     }
 
     @Override
     public void keyReleased(KeyEvent arg0) {
-       
+
+    }
+
+    /*Crea el primer usuario como admin*/
+    private void crearAdmin() {
+
+        admin.setNivel(1);
+
+        try {
+            usuarioDao.addUser(admin);
+        } catch (Exception ex) {
+            Logger.getLogger(ControlerLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private boolean validarFormulario() {
+        boolean bandera = true;
+        String error = "";
+        /*Nombre*/
+        if (!"".equals(crearAdmin.jTextFieldNombre.getText().trim())) {
+            admin.setNombre(crearAdmin.jTextFieldNombre.getText().trim());
+        } else {
+           
+           error = "Nombre no puede ser vacio. \n";
+            bandera = false;
+
+        }
+        //CONTRASEÑA
+        if (!"".equals(crearAdmin.jPasswordFieldPassword.getText().trim())) {
+            if (crearAdmin.jPasswordFieldPassword.getText().trim().length() < 5) {
+                bandera = false;
+               
+                error = error + "Contraseña debe ser mayor a 6 caracteres. \n";
+            } else {
+
+                admin.setPassword(Encryption.encrypt(crearAdmin.jPasswordFieldPassword.getText().trim()));
+            }
+
+        } else {
+            bandera = false;
+            
+             error = error + "Contraseña  no puede ser vacia. \n";
+        }
+        /*Contraseñas */
+        if (!crearAdmin.jPasswordFieldPassword.getText().trim().equals(crearAdmin.jPasswordFieldConfirmar.getText().trim())) {
+           
+            error = error + "Las contraseñas no coinciden. \n";
+            bandera = false;
+        }
+
+        if (bandera == false) {
+            JOptionPane.showMessageDialog(null, error, "error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return bandera;
     }
 
 }

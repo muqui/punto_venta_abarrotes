@@ -17,6 +17,14 @@ public class CrearAdmin extends javax.swing.JDialog {
     public CrearAdmin(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+
     }
 
     /**

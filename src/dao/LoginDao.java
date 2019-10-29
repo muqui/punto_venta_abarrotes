@@ -6,6 +6,7 @@
 package dao;
 
 import hibernate.HibernateUtil;
+import java.util.List;
 import modelo.Usuario;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -39,6 +40,26 @@ public class LoginDao {
             session.close();
         }
         return u;
+    }
+    
+    /*Selecciona todos los usuarios*/
+        public List<Usuario> getUsers () {
+         List<Usuario> usuarios = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+            String hql = "FROM Usuario";
+            Query query = session.createQuery(hql);
+            if (!query.list().isEmpty()) {            
+               usuarios = query.list();
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            session.close();
+        }
+        return usuarios;
     }
 
 }
