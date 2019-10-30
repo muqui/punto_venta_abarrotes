@@ -382,8 +382,8 @@ public class VentasModelo implements ActionListener, KeyListener {
 
                         BigDecimal precProveedor = pro.getPrecioProveedor().multiply(cant);
                         BigDecimal ttotal = cant.multiply(prec);
-
-                        listaVentaDetalle.add(new Tventadetalle(product, null, item.getTproducto().getCodigoBarras(), item.getTproducto().getNombre(), pro.getPrecioProveedor(), cant, ttotal, precProveedor, new BigDecimal("0.00"), new BigDecimal("0.00"), false, ""));
+                        System.out.println("Contenido del paquete antes de enviar a guardar " + pro.getCodigoBarras());
+                        listaVentaDetalle.add(new Tventadetalle(pro, null, item.getTproducto().getCodigoBarras(), item.getTproducto().getNombre(), pro.getPrecioProveedor(), cant, ttotal, precProveedor, new BigDecimal("0.00"), new BigDecimal("0.00"), false, ""));
                         //  productoDao.cerrar();
                     }
                 }

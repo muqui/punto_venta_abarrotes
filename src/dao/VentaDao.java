@@ -38,6 +38,7 @@ public class VentaDao {
             for (Tventadetalle v : venta.getTventadetalles()) {
                 Tproducto p = v.getTproducto();
                 p.setCantidad(p.getCantidad().subtract(v.getCantidad()));
+                System.out.println("Codigo de barras a modificar = " + p.getCodigoBarras());
                 v.setTventa(venta);
                 if (p.getInventariar()) {
                     session.merge(p); //actualiza la cantidad de productos

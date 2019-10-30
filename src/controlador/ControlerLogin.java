@@ -173,7 +173,7 @@ public class ControlerLogin implements ActionListener, KeyListener {
     /*Crea el primer usuario como admin*/
     private void crearAdmin() {
 
-        admin.setNivel(1);
+        admin.setNivel(0);
 
         try {
             usuarioDao.addUser(admin);
