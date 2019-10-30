@@ -171,9 +171,7 @@ public class ControladorVender implements ActionListener, KeyListener {
         if (arg0.getSource() == jDialogBuscarProducto.jButtonAceptar) {
             agregarproductodesdeBuscar();
         }
-        if (arg0.getSource() == jDialogBuscarProducto.jButtonAceptar) {
-            agregarproductodesdeBuscar();
-        }
+
         if (arg0.getSource() == jDialogBuscarProducto.jButtonCancelar) {
             jDialogBuscarProducto.setVisible(false);
         }
@@ -411,6 +409,14 @@ public class ControladorVender implements ActionListener, KeyListener {
             jPanelTicketArray.get(indice).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
             jPanelTicketArray.get(indice).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);
 
+            /*Despues de crearlo lo selecciona*/
+            jpanelVentas.jTabbedPaneTickets.setSelectedIndex(indice);
+            int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
+            DefaultTableModel d = defaultTableModelArray.get(index);
+            total = ventasModelo.totalTicket(d);
+            jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(d) + " total productos");
+            jpanelVentas.jLabelTotal.setText("$ " + total);
+
         }
 
     }
@@ -480,7 +486,7 @@ public class ControladorVender implements ActionListener, KeyListener {
         jPanelTicketArray.get(index).jTableVender.setModel(defaultTableModelArray.get(index));
         total = ventasModelo.totalTicket(defaultTableModelArray.get(index));
         jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(defaultTableModelArray.get(index)) + " total productos");
-        
+
         jpanelVentas.jLabelTotal.setText("$ " + total);
         jPanelTicketArray.get(index).jTableVender.setRowSelectionInterval(0, 0);
     }
