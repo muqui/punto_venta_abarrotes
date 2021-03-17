@@ -64,6 +64,7 @@ public class Principal extends javax.swing.JFrame {
         jButtonConfiguracion = new javax.swing.JButton();
         jButtonReporte = new javax.swing.JButton();
         jButtonMisVentas = new javax.swing.JButton();
+        jButtonXbox = new javax.swing.JButton();
         jButtonCerrarSession = new javax.swing.JButton();
         jPanelPanelPrincipal = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -159,6 +160,17 @@ public class Principal extends javax.swing.JFrame {
         jButtonMisVentas.setMaximumSize(new java.awt.Dimension(180, 49));
         jButtonMisVentas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButtonMisVentas);
+
+        jButtonXbox.setBackground(new java.awt.Color(255, 255, 255));
+        jButtonXbox.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButtonXbox.setText("XBOX");
+        jButtonXbox.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButtonXbox.setFocusable(false);
+        jButtonXbox.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonXbox.setMaximumSize(new java.awt.Dimension(180, 49));
+        jButtonXbox.setMinimumSize(new java.awt.Dimension(129, 31));
+        jButtonXbox.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButtonXbox);
 
         jButtonCerrarSession.setBackground(new java.awt.Color(255, 255, 255));
         jButtonCerrarSession.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -273,6 +285,7 @@ public class Principal extends javax.swing.JFrame {
     public javax.swing.JButton jButtonReporte;
     public javax.swing.JButton jButtonSalir;
     public javax.swing.JButton jButtonVentas;
+    public javax.swing.JButton jButtonXbox;
     private javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabelTitulo;
     public javax.swing.JPanel jPanelPanelPrincipal;
