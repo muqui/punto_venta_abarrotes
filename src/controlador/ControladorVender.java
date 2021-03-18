@@ -33,6 +33,7 @@ import vista.JpanelVentas;
 import vista.Principal;
 import java.util.TimerTask;
 import java.util.Timer;
+import javax.swing.JButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -51,7 +52,7 @@ public class ControladorVender implements ActionListener, KeyListener {
     JDialogVerificadorPrecios jDialogVerificadorPrecios;
     ArrayList<JPanelTicket> jPanelTicketArray = new ArrayList<JPanelTicket>();
     ArrayList<DefaultTableModel> defaultTableModelArray = new ArrayList<DefaultTableModel>();
-    String[] columnNames = {"CODIGO", "NOMBRE", "PRECIO ", "CANTIDAD", "TOTAL", ""};
+    String[] columnNames = {"CODIGO", "NOMBRE", "PRECIO ", "CANTIDAD", "TOTAL", "","",""};
     JPanelTicket jPanelTicket;
     byte numeroDeTicket = 2;
     DefaultTableModel tableModelVentas;
@@ -62,6 +63,7 @@ public class ControladorVender implements ActionListener, KeyListener {
     ProductoDao productoDao;
     Timer timer = new Timer();
     BigDecimal total;
+    int altoColumnaTabla = 40;
 
     public ControladorVender(Principal vistaPrincipal, JpanelVentas jpanelVentas, JPanelTicket jPanelTicket, JDialogVentaAgranel jDialogVentaAgranel, JDialogMasDe1Producto jDialogMasDe1Producto, JDialogVentaFinal jDialogVentaFinal, JDialogBuscarProducto jDialogBuscarProducto, JDialogVerificadorPrecios jDialogVerificadorPrecios) {
         this.jDialogVerificadorPrecios = jDialogVerificadorPrecios;
@@ -99,6 +101,7 @@ public class ControladorVender implements ActionListener, KeyListener {
         //this.jDialogVentaAgranel.jTextFieldImporte.addKeyListener(this);
         // this.jDialogVentaAgranel.jTextFieldCantidad.addKeyListener(this);
         productos = new ArrayList<>();
+        
         jDialogBuscarProducto.jTableProductos.setModel(llenarTabla());
         productoDao = new ProductoDao();
         jPanelTicketArray.add(new JPanelTicket());
@@ -111,7 +114,37 @@ public class ControladorVender implements ActionListener, KeyListener {
                 return false;
             }
         });
+        
         defaultTableModelArray.get(0).setColumnIdentifiers(columnNames);
+        jPanelTicketArray.get(0).jTableVender.setDefaultRenderer(Object.class, new helpers.Render() ); // permite anadir boton a la tabla
+        jPanelTicketArray.get(0).jTableVender.setRowHeight(altoColumnaTabla);
+        //aventos de los botones añadir producto y eliminar producto esta para la pantalla touch
+        jPanelTicketArray.get(0).jTableVender.addMouseListener(new java.awt.event.MouseAdapter() {
+    @Override
+    public void mouseClicked(java.awt.event.MouseEvent evt) {
+        int  column= jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumnIndexAtX(evt.getX());
+        int row = evt.getY() / jPanelTicketArray.get(0).jTableVender.getRowHeight();
+          
+           
+        if (row < jPanelTicketArray.get(0).jTableVender.getRowCount() && row >= 0 && column < jPanelTicketArray.get(0).jTableVender.getColumnCount() && column >=0 ) {
+            
+            Object value = jPanelTicketArray.get(0).jTableVender.getValueAt(row, column);
+            if(value instanceof JButton){
+              ((JButton)value).doClick();
+               JButton boton = (JButton) value;
+               if(boton.getName().equals("+")){
+                   System.out.println("sumar");
+               }
+                if(boton.getName().equals("-")){
+                   System.out.println("resta 1");
+               }
+               
+               
+         }
+
+        }
+    }
+});
         jPanelTicketArray.get(0).jTableVender.setModel(defaultTableModelArray.get(0));
         jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
         jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);
@@ -375,6 +408,8 @@ public class ControladorVender implements ActionListener, KeyListener {
     private void insertarProducto() {
         int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
         DefaultTableModel d = ventasModelo.productos(jpanelVentas.jTextFieldCodigoBarras.getText(), precioVentaMenudeo, jPanelTicketArray.get(index).jTableVender, defaultTableModelArray.get(index), new BigDecimal("1"), false);
+         jPanelTicketArray.get(index).jTableVender.setDefaultRenderer(Object.class, new helpers.Render() ); // permite anadir boton a la tabla
+         jPanelTicketArray.get(index).jTableVender.setRowHeight(altoColumnaTabla);
         jPanelTicketArray.get(index).jTableVender.setModel(d);
         jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
         jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);

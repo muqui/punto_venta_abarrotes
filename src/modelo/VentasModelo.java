@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -121,8 +122,11 @@ public class VentasModelo implements ActionListener, KeyListener {
         if (existe < 0) {
             precio = precio.multiply(this.cantidad);
             precio = precio.setScale(1, BigDecimal.ROUND_HALF_UP);
-
-            Object[] name = new Object[]{codigo, productoTicket.getNombre(), precioUnitario, this.cantidad, precio, productoTicket.getComosevende()};
+            JButton sumar = new JButton(" + ");
+            sumar.setName("+");
+            JButton restar = new JButton(" - ");
+            restar.setName("-");
+            Object[] name = new Object[]{codigo, productoTicket.getNombre(), precioUnitario, this.cantidad, precio, productoTicket.getComosevende(), sumar, restar};
             defaultTableModel.addRow(name);
         } else {
             cambiarcantidad(existe, defaultTableModel, precioUnitario, this.cantidad);
