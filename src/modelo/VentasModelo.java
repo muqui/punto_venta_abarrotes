@@ -11,8 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +34,7 @@ import vista.Principal;
  *
  * @author mq12
  */
-public class VentasModelo implements ActionListener, KeyListener {
+public class VentasModelo implements ActionListener, KeyListener  {
 
     JDialogVentaAgranel jDialogVentaAgranel;
     JDialogVentaFinal jDialogVentaFinal;
@@ -89,6 +90,7 @@ public class VentasModelo implements ActionListener, KeyListener {
             return defaultTableModel;
         }
         this.cantidad = cantidad;
+      
 
         if (precioVentaMenudeo) {
             precio = productoTicket.getPrecioVentaUnitario();
@@ -122,14 +124,18 @@ public class VentasModelo implements ActionListener, KeyListener {
         if (existe < 0) {
             precio = precio.multiply(this.cantidad);
             precio = precio.setScale(1, BigDecimal.ROUND_HALF_UP);
-            JButton sumar = new JButton(" + ");
+            JButton sumar = new JButton("");
+             sumar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/mas_1.jpg"))); 
             sumar.setName("+");
-            JButton restar = new JButton(" - ");
+            JButton restar = new JButton("");
             restar.setName("-");
+             restar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/menos_1.jpg"))); 
             Object[] name = new Object[]{codigo, productoTicket.getNombre(), precioUnitario, this.cantidad, precio, productoTicket.getComosevende(), sumar, restar};
             defaultTableModel.addRow(name);
         } else {
+             System.out.println("18/03/2021 this.cantidad " + cantidad);
             cambiarcantidad(existe, defaultTableModel, precioUnitario, this.cantidad);
+            
         }
 
         return defaultTableModel;
@@ -150,15 +156,38 @@ public class VentasModelo implements ActionListener, KeyListener {
 
     public DefaultTableModel cambiarcantidad(int posicion, DefaultTableModel tableModelVentas, BigDecimal precio, BigDecimal incremento) {
         BigDecimal cantidad = (BigDecimal) tableModelVentas.getValueAt(posicion, 3);
-        cantidad = cantidad.add(incremento);
+       
+       
+           
+        if ( cantidad.compareTo(new BigDecimal("1")) == 1) {
+             cantidad = cantidad.add(incremento);
+        }else
+          if ( cantidad.compareTo(new BigDecimal("1")) == 0) {
+              System.out.println(" es uno oooooooooo"); 
+              if(incremento.compareTo(new BigDecimal("1")) == 0){
+                  cantidad = cantidad.add(new BigDecimal("1"));
+              }
+              else
+                  
+              cantidad = cantidad.add(new BigDecimal("0"));
+        }
+        
+          
+             System.out.println("Cantidad delmodelo " + cantidad);
+           System.out.println("Incremento " + incremento);
+       
         BigDecimal totalVentaPorProducto = precio;
         totalVentaPorProducto = totalVentaPorProducto.multiply(cantidad);
         totalVentaPorProducto = totalVentaPorProducto.setScale(1, BigDecimal.ROUND_HALF_UP);
         tableModelVentas.setValueAt(cantidad, posicion, 3);
         tableModelVentas.setValueAt(totalVentaPorProducto, posicion, 4);
 
-        return tableModelVentas;
-
+       
+        
+        
+         return tableModelVentas;
+         
+       
     }
 
     public BigDecimal totalTicket(DefaultTableModel tableModelVentas) {
@@ -542,5 +571,15 @@ public class VentasModelo implements ActionListener, KeyListener {
         }
 
     }
+
+   
+
+    
+
+    
+
+    
+
+   
 
 }

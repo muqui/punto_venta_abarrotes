@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,7 @@ import javax.swing.event.ChangeListener;
  *
  * @author mq12
  */
-public class ControladorVender implements ActionListener, KeyListener {
+public class ControladorVender implements ActionListener, KeyListener, MouseListener {
 
     Principal vistaPrincipal;
     JpanelVentas jpanelVentas;
@@ -64,7 +66,7 @@ public class ControladorVender implements ActionListener, KeyListener {
     Timer timer = new Timer();
     BigDecimal total;
     int altoColumnaTabla = 40;
-
+    int index ;
     public ControladorVender(Principal vistaPrincipal, JpanelVentas jpanelVentas, JPanelTicket jPanelTicket, JDialogVentaAgranel jDialogVentaAgranel, JDialogMasDe1Producto jDialogMasDe1Producto, JDialogVentaFinal jDialogVentaFinal, JDialogBuscarProducto jDialogBuscarProducto, JDialogVerificadorPrecios jDialogVerificadorPrecios) {
         this.jDialogVerificadorPrecios = jDialogVerificadorPrecios;
         this.vistaPrincipal = vistaPrincipal;
@@ -114,44 +116,29 @@ public class ControladorVender implements ActionListener, KeyListener {
                 return false;
             }
         });
-        
+        jPanelTicketArray.get(0).jTableVender.addMouseListener(this); 
         defaultTableModelArray.get(0).setColumnIdentifiers(columnNames);
         jPanelTicketArray.get(0).jTableVender.setDefaultRenderer(Object.class, new helpers.Render() ); // permite anadir boton a la tabla
         jPanelTicketArray.get(0).jTableVender.setRowHeight(altoColumnaTabla);
+       
+        
+         
         //aventos de los botones añadir producto y eliminar producto esta para la pantalla touch
         jPanelTicketArray.get(0).jTableVender.addMouseListener(new java.awt.event.MouseAdapter() {
-    @Override
-    public void mouseClicked(java.awt.event.MouseEvent evt) {
-        int  column= jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumnIndexAtX(evt.getX());
-        int row = evt.getY() / jPanelTicketArray.get(0).jTableVender.getRowHeight();
-          
-           
-        if (row < jPanelTicketArray.get(0).jTableVender.getRowCount() && row >= 0 && column < jPanelTicketArray.get(0).jTableVender.getColumnCount() && column >=0 ) {
-            
-            Object value = jPanelTicketArray.get(0).jTableVender.getValueAt(row, column);
-            if(value instanceof JButton){
-              ((JButton)value).doClick();
-               JButton boton = (JButton) value;
-               if(boton.getName().equals("+")){
-                   System.out.println("sumar");
-               }
-                if(boton.getName().equals("-")){
-                   System.out.println("resta 1");
-               }
-               
-               
-         }
 
-        }
-    }
 });
         jPanelTicketArray.get(0).jTableVender.setModel(defaultTableModelArray.get(0));
-        jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
-        jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);
+        jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);  //Oculta la columna 5 (muesta si es paquete) se usa para la logica de progarmacion.
+        jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);  // por razon desconozida pongo doble esta linea
+         jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(6).setMinWidth(60);  // por razon desconozida pongo doble esta linea
+        jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(6).setMaxWidth(60);// por razon desconozida pongo doble esta linea
+        jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(7).setMinWidth(60);  // por razon desconozida pongo doble esta linea
+        jPanelTicketArray.get(0).jTableVender.getColumnModel().getColumn(7).setMaxWidth(60);// por razon desconozida pongo doble esta linea
         jpanelVentas.jTextFieldCodigoBarras.requestFocus();
         muqui();
+       
         t();
-
+     
     }
 
     @Override
@@ -180,7 +167,7 @@ public class ControladorVender implements ActionListener, KeyListener {
         }
 
         if (arg0.getSource() == jpanelVentas.jButtonAgregarProducto) {
-            insertarProducto();
+            insertarProducto(jpanelVentas.jTextFieldCodigoBarras.getText(   ));
         }
 
         if (arg0.getSource() == jpanelVentas.jButtonMayoreo) {
@@ -273,7 +260,7 @@ public class ControladorVender implements ActionListener, KeyListener {
 
         if (ke.getSource() == jpanelVentas.jTextFieldCodigoBarras) {
             if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
-                insertarProducto();
+                insertarProducto(jpanelVentas.jTextFieldCodigoBarras.getText());
             }
             if (ke.getSource() == jpanelVentas.jTextFieldCodigoBarras) {
 
@@ -405,19 +392,44 @@ public class ControladorVender implements ActionListener, KeyListener {
 
     }
 
-    private void insertarProducto() {
-        int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
-        DefaultTableModel d = ventasModelo.productos(jpanelVentas.jTextFieldCodigoBarras.getText(), precioVentaMenudeo, jPanelTicketArray.get(index).jTableVender, defaultTableModelArray.get(index), new BigDecimal("1"), false);
+    private void insertarProducto(String codigo) {
+         this.index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
+       
+     //   jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
+      //  jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);
+
+             
+         DefaultTableModel d = ventasModelo.productos(codigo, precioVentaMenudeo, jPanelTicketArray.get(index).jTableVender, defaultTableModelArray.get(index), new BigDecimal("1"), false);
          jPanelTicketArray.get(index).jTableVender.setDefaultRenderer(Object.class, new helpers.Render() ); // permite anadir boton a la tabla
+
          jPanelTicketArray.get(index).jTableVender.setRowHeight(altoColumnaTabla);
         jPanelTicketArray.get(index).jTableVender.setModel(d);
-        jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
-        jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);
-
         total = ventasModelo.totalTicket(d);
+        
         jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(d) + " total productos");
         jpanelVentas.jLabelTotal.setText("$ " + total);
         jpanelVentas.jTextFieldCodigoBarras.setText("");
+        
+
+    }
+     private void restaUnProducto(String codigo) {
+         this.index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
+       
+     //   jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
+      //  jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);
+
+             
+         DefaultTableModel d = ventasModelo.productos(codigo, precioVentaMenudeo, jPanelTicketArray.get(index).jTableVender, defaultTableModelArray.get(index), new BigDecimal("-1"), false);
+         jPanelTicketArray.get(index).jTableVender.setDefaultRenderer(Object.class, new helpers.Render() ); // permite anadir boton a la tabla
+
+         jPanelTicketArray.get(index).jTableVender.setRowHeight(altoColumnaTabla);
+        jPanelTicketArray.get(index).jTableVender.setModel(d);
+        total = ventasModelo.totalTicket(d);
+        
+        jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(d) + " total productos");
+        jpanelVentas.jLabelTotal.setText("$ " + total);
+        jpanelVentas.jTextFieldCodigoBarras.setText("");
+        
 
     }
 
@@ -440,13 +452,15 @@ public class ControladorVender implements ActionListener, KeyListener {
             });
             defaultTableModelArray.get(indice).setColumnIdentifiers(columnNames);
             jpanelVentas.jTabbedPaneTickets.add(nombre, jPanelTicketArray.get(indice));
+            
+            jPanelTicketArray.get(indice).jTableVender.addMouseListener(this);  // inicia escuchador
             jPanelTicketArray.get(indice).jTableVender.setModel(defaultTableModelArray.get(indice));
             jPanelTicketArray.get(indice).jTableVender.getColumnModel().getColumn(5).setMinWidth(0);
             jPanelTicketArray.get(indice).jTableVender.getColumnModel().getColumn(5).setMaxWidth(0);
 
             /*Despues de crearlo lo selecciona*/
             jpanelVentas.jTabbedPaneTickets.setSelectedIndex(indice);
-            int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
+            index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
             DefaultTableModel d = defaultTableModelArray.get(index);
             total = ventasModelo.totalTicket(d);
             jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(d) + " total productos");
@@ -455,7 +469,7 @@ public class ControladorVender implements ActionListener, KeyListener {
         }
 
     }
-
+  
     private void eliminarTicket() {
         if (numeroDeTicket > 2) {
             byte eliminar = (byte) (numeroDeTicket - 2);
@@ -474,15 +488,17 @@ public class ControladorVender implements ActionListener, KeyListener {
 
         if (seleccionado == (jpanelVentas.jTabbedPaneTickets.getTabCount() - 1)) {
             seleccionado = 0;
+            index = 0;
         } else {
             seleccionado++;
         }
 
         jpanelVentas.jTabbedPaneTickets.setSelectedIndex(seleccionado);
 
-        int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
+         index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
         DefaultTableModel d = defaultTableModelArray.get(index);
-
+        System.out.println("cambiar ticket metodo " +  index);
+      
         total = ventasModelo.totalTicket(d);
         jpanelVentas.jLabelTotalProductosVendidos.setText("" + ventasModelo.totalProductos(d) + " total productos");
         jpanelVentas.jLabelTotal.setText("$ " + total);
@@ -659,13 +675,13 @@ public class ControladorVender implements ActionListener, KeyListener {
         timer.schedule(task, 10, 100);
 
     }
-
+    
     public void muqui() {
         this.jpanelVentas.jTabbedPaneTickets.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent arg0) {
                 // System.out.println("Tab: " + jpanelVentas.jTabbedPaneTickets.getSelectedIndex());
-                int index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
+                 index = jpanelVentas.jTabbedPaneTickets.getSelectedIndex();
                 DefaultTableModel d = defaultTableModelArray.get(index);
 
                 total = ventasModelo.totalTicket(d);
@@ -675,4 +691,55 @@ public class ControladorVender implements ActionListener, KeyListener {
             }
         });
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        System.out.println("index global " + index);
+           int  column= jPanelTicketArray.get(index).jTableVender.getColumnModel().getColumnIndexAtX(e.getX());
+        int row = e.getY() / jPanelTicketArray.get(index).jTableVender.getRowHeight();
+          
+           
+        if (row < jPanelTicketArray.get(index).jTableVender.getRowCount() && row >= 0 && column < jPanelTicketArray.get(index).jTableVender.getColumnCount() && column >=0 ) {
+            
+            Object value = jPanelTicketArray.get(index).jTableVender.getValueAt(row, column);
+            Object codigo =  jPanelTicketArray.get(index).jTableVender.getValueAt(row, 0);
+            
+            if(value instanceof JButton){
+              ((JButton)value).doClick();
+               JButton boton = (JButton) value;
+               if(boton.getName().equals("+")){
+                   System.out.println("sumar" + index);
+                    insertarProducto(codigo.toString());
+                    
+               }
+                if(boton.getName().equals("-")){
+                   System.out.println("resta " + index);
+                    restaUnProducto(codigo.toString());
+               }
+               
+               
+         }
+
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+       
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+       
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+       
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) { 
+    }
+       
 }
