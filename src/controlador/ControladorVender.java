@@ -278,6 +278,9 @@ public class ControladorVender implements ActionListener, KeyListener, MouseList
                     jDialogVerificadorPrecios.setLocationRelativeTo(null);
                     jDialogVerificadorPrecios.setVisible(true);
                 }
+                if (ke.getKeyCode() == KeyEvent.VK_F11) {
+                   pantallaCompleta();
+                }
 
             }
 
@@ -740,6 +743,15 @@ public class ControladorVender implements ActionListener, KeyListener, MouseList
 
     @Override
     public void mouseExited(MouseEvent e) { 
+    }
+
+    private void pantallaCompleta() {
+        System.out.println("PANTALLA COMPLETA");
+      boolean visible = vistaPrincipal.jToolBar1.isVisible();
+       vistaPrincipal.jToolBar1.setVisible(!visible);
+       vistaPrincipal.jLabelTitulo.setVisible(!visible);
+       vistaPrincipal.jButtonSalir.setVisible(!visible);
+               
     }
        
 }

@@ -56,7 +56,7 @@
                   <Component id="jButtonSalir" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="jLabelTitulo" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="jToolBar1" min="-2" max="-2" attributes="0"/>
@@ -377,7 +377,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="355" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="360" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
