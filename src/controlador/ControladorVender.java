@@ -576,7 +576,7 @@ public class ControladorVender implements ActionListener, KeyListener, MouseList
     private void productosPorNombre(String text) {
         try {
 
-            productos = productoDao.getPorNombre(text);
+            productos = productoDao.getPorNombreDeshabilitado(text);
 
             jDialogBuscarProducto.jTableProductos.setModel(llenarTabla());
             jDialogBuscarProducto.jTableProductos.setRowSelectionInterval(0, 0);

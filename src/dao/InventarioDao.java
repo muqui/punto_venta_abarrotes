@@ -26,7 +26,7 @@ public class InventarioDao {
     
       public List<Tproducto> productosInventario() throws Exception {
         session = HibernateUtil.getSessionFactory().openSession();
-        String hql = "from Tproducto where comosevende <> 'Paquete'";
+        String hql = "from Tproducto where comosevende <> 'Paquete'and habilitado <> 0";
         Query query = session.createQuery(hql);
         List<Tproducto> productosPorNombre = (List<Tproducto>) query.list();
         session.close();
@@ -35,7 +35,7 @@ public class InventarioDao {
     
        public BigDecimal totalInventario() {
         session = HibernateUtil.getSessionFactory().openSession();
-        String hql = "select sum(t.cantidad * t.precioProveedor ) from Tproducto as t where t.comosevende <> 'Paquete'";
+        String hql = "select sum(t.cantidad * t.precioProveedor ) from Tproducto as t where t.comosevende <> 'Paquete' and habilitado <> 0";
         Query query = session.createQuery(hql);
         BigDecimal total = (BigDecimal) query.uniqueResult();
         return total;
@@ -54,7 +54,7 @@ public class InventarioDao {
     public BigDecimal totalInventario(String nombre) {
         BigDecimal total = new BigDecimal("0.00");
         session = HibernateUtil.getSessionFactory().openSession();
-        String hql = "select sum(t.cantidad * t.precioProveedor ) from Tproducto as t where t.comosevende <> 'Paquete' and t.departamento.nombre = :nombre";
+        String hql = "select sum(t.cantidad * t.precioProveedor ) from Tproducto as t where t.comosevende <> 'Paquete' and t.habilitado <> 0 and t.departamento.nombre = :nombre";
         Query query = session.createQuery(hql);
            query.setParameter("nombre", nombre);
         try {
@@ -72,7 +72,7 @@ public class InventarioDao {
     
      public List<Tproducto> productosInventario(String nombre) {
         session = HibernateUtil.getSessionFactory().openSession();
-        String hql = "from Tproducto t where t.comosevende <> 'Paquete' and t.departamento.nombre = :nombre";
+        String hql = "from Tproducto t where t.comosevende <> 'Paquete' and t.habilitado <> 0 and t.departamento.nombre = :nombre";
         Query query = session.createQuery(hql);
         query.setParameter("nombre", nombre);
         List<Tproducto> productosPorNombre = (List<Tproducto>) query.list();

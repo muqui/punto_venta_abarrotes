@@ -89,6 +89,11 @@ public class VentasModelo implements ActionListener, KeyListener  {
 
             return defaultTableModel;
         }
+        if(productoTicket.getHabilitado() == false){
+             JOptionPane.showMessageDialog(null, "Producto Desabilitado.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            return defaultTableModel;
+        }
         this.cantidad = cantidad;
       
 

@@ -1,0 +1,4 @@
+Fecha 27/03/2021
+Agregar columna a tabla tproductos para desabilitar el producto.
+
+ALTER TABLE tproducto ADD COLUMN habilitado BOOLEAN;

@@ -47,6 +47,7 @@ public class Tproducto  implements java.io.Serializable {
      private Integer minimo;
      private BigDecimal iva;
      private BigDecimal ieps;
+     private Boolean habilitado;
      private Set<Tventadetalle> tventadetalles = new HashSet<Tventadetalle>(0);
      private Set<ContenidoPaquete> contenidoPaquetes = new HashSet<ContenidoPaquete>(0);
 
@@ -193,6 +194,20 @@ public class Tproducto  implements java.io.Serializable {
         this.inventariar = inventariar;
     }
 
+    /**
+     * @return the habilitado
+     */
+    @Column(name="habilitado")
+    public Boolean getHabilitado() {
+        return this.habilitado;
+    }
+
+    /**
+     * @param habilitado the habilitado to set
+     */
+    public void setHabilitado(Boolean habilitado) {
+        this.habilitado = habilitado;
+    }
     
     @Column(name="minimo")
     public Integer getMinimo() {
@@ -240,6 +255,8 @@ public class Tproducto  implements java.io.Serializable {
     public void setContenidoPaquetes(Set<ContenidoPaquete> contenidoPaquetes) {
         this.contenidoPaquetes = contenidoPaquetes;
     }
+
+    
 
 
 

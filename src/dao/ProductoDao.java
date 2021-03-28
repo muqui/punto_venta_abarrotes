@@ -32,7 +32,7 @@ public class ProductoDao {
         Tproducto producto = null;
        
         session = HibernateUtil.getSessionFactory().openSession();
-        String hql = "from Tproducto where codigoBarras=:codigoBarras";
+        String hql = "from Tproducto where codigoBarras=:codigoBarras ";
         Query query = session.createQuery(hql);
         query.setParameter("codigoBarras", codigoBarras);
         producto = (Tproducto) query.uniqueResult();
@@ -63,7 +63,18 @@ public class ProductoDao {
 
     public List<Tproducto> getPorNombre(String nombre) throws Exception {
         session = HibernateUtil.getSessionFactory().openSession();
-        String hql = "from Tproducto where nombre LIKE :nombre";
+        String hql = "from Tproducto where nombre LIKE :nombre ";
+        Query query = session.createQuery(hql);
+        query.setParameter("nombre", "%" + nombre + "%");
+        List<Tproducto> productosPorNombre = (List<Tproducto>) query.list();
+
+        // session.close();
+        return productosPorNombre;
+    }
+    
+      public List<Tproducto> getPorNombreDeshabilitado(String nombre) throws Exception {
+        session = HibernateUtil.getSessionFactory().openSession();
+        String hql = "from Tproducto where nombre LIKE :nombre and habilitado <> false";
         Query query = session.createQuery(hql);
         query.setParameter("nombre", "%" + nombre + "%");
         List<Tproducto> productosPorNombre = (List<Tproducto>) query.list();

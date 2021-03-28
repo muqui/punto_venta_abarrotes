@@ -7,10 +7,13 @@ package controlador;
 
 import dao.ModificarProductoDao;
 import dao.ProductoDao;
+import java.awt.Button;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.ContenidoPaquete;
@@ -33,7 +37,7 @@ import vista.producto.JpanelProductoModificar;
  *
  * @author mq12
  */
-public class ControladorProductosModificar implements ActionListener, KeyListener {
+public class ControladorProductosModificar implements ActionListener, KeyListener, MouseListener {
 
     Principal vistaPrincipal;
     JpanelProductos jpanelProductos;
@@ -43,6 +47,7 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
     JDialogModificarPaquete jDialogModificarPaquete;
     ModificarProductoDao modificarProductoDao = new ModificarProductoDao();
     ProductoDao productoDao = new ProductoDao();
+           
     List<ContenidoPaquete> contenidoPaqueteList = new ArrayList<>();
     List<Tproducto> productos;
     BigDecimal CostoTotalActual = new BigDecimal("0.00");
@@ -69,6 +74,7 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
         this.jDialogModificarPaquete.jButtonPaqueteAgregar.addActionListener(this);
         this.jDialogModificarPaquete.jButtonLimpiar.addActionListener(this);
         this.jDialogBuscarProductoModificar.jButtonAceptar.addActionListener(this);
+         jDialogBuscarProductoModificar.jTableProductos.addMouseListener(this);  // inicia escuchador
         limpiarCamposActualizar();
     }
 
@@ -477,7 +483,10 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
             System.out.println("Productos " + productos);
             jDialogBuscarProductoModificar.jTableProductos.setModel(llenarTabla());
             jDialogBuscarProductoModificar.jTableProductos.setRowSelectionInterval(0, 0);
-
+            jDialogBuscarProductoModificar.jTableProductos.setDefaultRenderer(Object.class, new helpers.Render() ); // permite anadir boton a la tabla
+            jDialogBuscarProductoModificar.jTableProductos.setRowHeight(40);
+//            jDialogBuscarProductoModificar.jTableProductos.getColumnModel().getColumn(4).setMaxWidth(300);// por razon desconozida pongo doble esta linea
+//            jDialogBuscarProductoModificar.jTableProductos.getColumnModel().getColumn(4).setMaxWidth(300);// por razon desconozida pongo doble esta linea
         } catch (Exception ex) {
             Logger.getLogger(ControladorProductosModificar.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -494,20 +503,76 @@ public class ControladorProductosModificar implements ActionListener, KeyListene
             }
         };
 
-        String[] columnNames = {"CODIGO", "NOMBRE", "PRECIO", "CANTIDAD"};
+        String[] columnNames = {"CODIGO_1", "NOMBRE", "PRECIO", "CANTIDAD", "HABILITADO"};
         tableModel.setColumnIdentifiers(columnNames);
         Object[] fila = new Object[tableModel.getColumnCount()];
-
+      
         for (int i = 0; i < productos.size(); i++) {
+             
+             boolean habilitado = productos.get(i).getHabilitado();
+             JButton sumar =  habilitado ? new JButton("Habilitado") : new JButton("Deshabilitado");
+              
+             System.out.println("Habilitado 0 ? " + habilitado);
+            
 
             fila[0] = productos.get(i).getCodigoBarras();
             fila[1] = productos.get(i).getNombre();
             fila[2] = productos.get(i).getPrecioVentaUnitario();
             fila[3] = productos.get(i).getCantidad();
-
+           
+             
+            fila[4] = sumar;
             tableModel.addRow(fila);
-
+            
         }
         return tableModel;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        System.out.println("Mouse producto");
+                
+           int  column= jDialogBuscarProductoModificar.jTableProductos.getColumnModel().getColumnIndexAtX(e.getX());
+        int row = e.getY() / jDialogBuscarProductoModificar.jTableProductos.getRowHeight();
+          
+           
+        if (row < jDialogBuscarProductoModificar.jTableProductos.getRowCount() && row >= 0 && column < jDialogBuscarProductoModificar.jTableProductos.getColumnCount() && column >=0 ) {
+            
+            Object value = jDialogBuscarProductoModificar.jTableProductos.getValueAt(row, column);
+            Object codigoBarras =  jDialogBuscarProductoModificar.jTableProductos.getValueAt(row, 0);
+            
+            if(value instanceof JButton){
+              ((JButton)value).doClick();
+               JButton boton = (JButton) value;
+               
+              Tproducto producto = productoDao.getByCodigoBarras(codigoBarras.toString()); // regresa el producto
+              productoDao.cerrar();
+              producto.setHabilitado(!producto.getHabilitado());
+              String titulo =  producto.getHabilitado() ?  "Habilitado":  "Deshabilitado";
+              modificarProductoDao.modificarProducto(producto);
+                boton.setText(titulo);
+         }
+
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+       
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+       
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+       
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+      
     }
 }
