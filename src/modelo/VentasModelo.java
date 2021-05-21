@@ -434,7 +434,8 @@ public class VentasModelo implements ActionListener, KeyListener  {
         }
         Set<Tventadetalle> setTventadetalle = new HashSet<Tventadetalle>(listaVentaDetalle);
         venta.setTventadetalles(setTventadetalle);
-
+        String pagoCon = jDialogVentaFinal.jTextFieldPagoCon.getText();
+        venta.setPago(pagoCon);
         venta.setUsuario(vistaPrincipal.usuario);
         venta.setFechaRegistro(new Date());
         venta.setPrecioVentaTotal(totalTicket(tableModelVentas));

@@ -2,3 +2,12 @@ Fecha 27/03/2021
 Agregar columna a tabla tproductos para desabilitar el producto.
 
 ALTER TABLE tproducto ADD COLUMN habilitado BOOLEAN;
+
+
+//Habilita todos los productos
+update tproducto set habilitado = 1;
+
+
+Agregar columna pago (cantidad con la que pago)
+
+ALTER TABLE tventa ADD COLUMN pago varchar(50);

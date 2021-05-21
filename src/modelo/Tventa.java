@@ -34,6 +34,7 @@ public class Tventa  implements java.io.Serializable {
      private Usuario usuario;
      private BigDecimal precioVentaTotal;
      private Date fechaRegistro;
+     private String pago;
      private Set<Tventadetalle> tventadetalles = new HashSet<Tventadetalle>(0);
      private Set<Formadepago> formadepagos = new HashSet<Formadepago>(0);
 
@@ -46,12 +47,13 @@ public class Tventa  implements java.io.Serializable {
         this.precioVentaTotal = precioVentaTotal;
         this.fechaRegistro = fechaRegistro;
     }
-    public Tventa(Usuario usuario, BigDecimal precioVentaTotal, Date fechaRegistro, Set<Tventadetalle> tventadetalles, Set<Formadepago> formadepagos) {
+    public Tventa(Usuario usuario, BigDecimal precioVentaTotal, Date fechaRegistro, Set<Tventadetalle> tventadetalles, Set<Formadepago> formadepagos, String pago) {
        this.usuario = usuario;
        this.precioVentaTotal = precioVentaTotal;
        this.fechaRegistro = fechaRegistro;
        this.tventadetalles = tventadetalles;
        this.formadepagos = formadepagos;
+       this.pago = pago;
     }
    
      @Id @GeneratedValue(strategy=IDENTITY)
@@ -112,6 +114,21 @@ public class Tventa  implements java.io.Serializable {
     
     public void setFormadepagos(Set<Formadepago> formadepagos) {
         this.formadepagos = formadepagos;
+    }
+
+    /**
+     * @return the pago
+     */
+    @Column(name="pago", unique=true, nullable=false, length=50)
+    public String getPago() {
+        return pago;
+    }
+
+    /**
+     * @param pago the pago to set
+     */
+    public void setPago(String pago) {
+        this.pago = pago;
     }
 
 

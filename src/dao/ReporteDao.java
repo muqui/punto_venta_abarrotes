@@ -71,7 +71,7 @@ public class ReporteDao {
             prop.load(input);
             String clase = prop.getProperty("hibernate.connection.driver_class");
             Class.forName(clase);
-            String[] columnNames = {"ID VENTA", "FECHA", "CODIGO", "NOMBRE", "DEPARTAMENTO", "USUARIO", "CANTIDAD", "PRECIO", "COSTO TOTAL PROVEEDOR", "TOTAL"};
+            String[] columnNames = {"ID VENTA", "FECHA", "CODIGO", "NOMBRE", "DEPARTAMENTO", "USUARIO", "CANTIDAD", "PRECIO", "COSTO TOTAL PROVEEDOR","PAGO CON", "TOTAL"};
             tableModel.setColumnIdentifiers(columnNames);
             Object[] fila = new Object[tableModel.getColumnCount()];
             // Establecemos la conexión con la base de datos. 
@@ -84,7 +84,7 @@ public class ReporteDao {
             String f = df.format(hasta);
             Statement s = conexion.createStatement();
 
-            String consultaSql = "select d.idVenta,v.fechaRegistro, d.codigoBarrasProducto, d.nombreProducto, dep.nombre, u.nombre, d.cantidad, d.precioventaUnitarioProducto, d.precioproveedor, d.totalprecioventa  from tventadetalle d inner join tventa v  on v.idventa = d.idventa inner join tproducto p on p.idproducto = d.idproducto inner join departamento dep on p.categoria_id = dep.id inner join usuario u on u.id = v.usuario_id  where u.nombre LIKE  '%" + usuario + "%' and v.fecharegistro >='" + i + " 00:00:00' and v.fecharegistro <= '" + f + " 23:59:29' and d.imprimir = 1 and dep.nombre LIKE '%" + categoria + "%' ORDER BY v.fechaRegistro desc";
+            String consultaSql = "select d.idVenta,v.fechaRegistro, d.codigoBarrasProducto, d.nombreProducto, dep.nombre, u.nombre, d.cantidad, d.precioventaUnitarioProducto, d.precioproveedor,v.pago, d.totalprecioventa  from tventadetalle d inner join tventa v  on v.idventa = d.idventa inner join tproducto p on p.idproducto = d.idproducto inner join departamento dep on p.categoria_id = dep.id inner join usuario u on u.id = v.usuario_id  where u.nombre LIKE  '%" + usuario + "%' and v.fecharegistro >='" + i + " 00:00:00' and v.fecharegistro <= '" + f + " 23:59:29' and d.imprimir = 1 and dep.nombre LIKE '%" + categoria + "%' ORDER BY v.fechaRegistro desc";
             System.out.println("sentencia " + consultaSql);
             ResultSet rs = s.executeQuery(consultaSql);
             while (rs.next()) {
@@ -98,6 +98,7 @@ public class ReporteDao {
                 fila[7] = "" + rs.getString(8);
                 fila[8] = "" + rs.getString(9);
                 fila[9] = "" + rs.getBigDecimal(10);
+                 fila[10] = "" + rs.getBigDecimal(11);
                 System.out.println("productos ............................................. " + rs.getInt(1));
                 tableModel.addRow(fila);
             }

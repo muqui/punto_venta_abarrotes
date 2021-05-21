@@ -440,6 +440,11 @@ public class JDialogVentaFinal extends javax.swing.JDialog {
         );
 
         Cobrar.setText("F12 -  Cobrar");
+        Cobrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CobrarActionPerformed(evt);
+            }
+        });
 
         jButtonImprimirCobrar.setText("F11 - Imprimir y cobrar");
 
@@ -490,6 +495,10 @@ public class JDialogVentaFinal extends javax.swing.JDialog {
     private void jTextFieldMixtoValeCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMixtoValeCantidadActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldMixtoValeCantidadActionPerformed
+
+    private void CobrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CobrarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CobrarActionPerformed
 
     /**
      * @param args the command line arguments

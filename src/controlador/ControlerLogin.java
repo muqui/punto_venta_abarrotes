@@ -95,6 +95,7 @@ public class ControlerLogin implements ActionListener, KeyListener {
                 vistaPrincipal.setExtendedState(vistaPrincipal.getExtendedState() | JFrame.MAXIMIZED_BOTH);
                 vistaPrincipal.jLabelTitulo.setVisible(true);
                 vistaPrincipal.jButtonSalir.setVisible(true);
+                vistaPrincipal.jButtonXbox.setVisible(false); // Oculta la pestaña XBOX 
                 vistaPrincipal.jToolBar1.setVisible(true);
                 vistaPrincipal.jPanelPanelPrincipal.setVisible(true);
                 this.vistaPrincipal.usuario = usuario;
