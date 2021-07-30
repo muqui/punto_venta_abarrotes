@@ -257,7 +257,8 @@ public class ControladorProductos implements ActionListener {
 
             // Unidad, Granel, Paquete
             int seleccion = jpanelProductoNuevo.jComboBoxComoSevende.getSelectedIndex();
-
+             // Habilita el producto.
+             producto.setHabilitado(true);
             if (seleccion == 0) {
                 producto.setComosevende("Unidad");
             } else if (seleccion == 1) {

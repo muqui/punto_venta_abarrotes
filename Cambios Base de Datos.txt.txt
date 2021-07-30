@@ -8,6 +8,6 @@ ALTER TABLE tproducto ADD COLUMN habilitado BOOLEAN;
 update tproducto set habilitado = 1;
 
 
-Agregar columna pago (cantidad con la que pago)
+Agregar columna a tabla tventas con cuanato pago.
 
 ALTER TABLE tventa ADD COLUMN pago varchar(50);
