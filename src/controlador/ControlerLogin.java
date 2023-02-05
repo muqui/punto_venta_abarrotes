@@ -5,6 +5,7 @@
  */
 package controlador;
 
+import MYSQL.ConnectionMYSQLManager;
 import dao.LoginDao;
 import dao.UsuarioDao;
 import encryption.Encryption;

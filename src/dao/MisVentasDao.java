@@ -5,11 +5,16 @@
  */
 package dao;
 
+import MYSQL.ConnectionMYSQLManager;
 import hibernate.HibernateUtil;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 import modelo.Tventadetalle;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -20,65 +25,74 @@ import org.hibernate.Transaction;
  * @author mq12
  */
 public class MisVentasDao {
+    ConnectionMYSQLManager con = new ConnectionMYSQLManager();
+    private BigDecimal total;
+    
+     public DefaultTableModel getVentasDetalle(String nombre) {
+                  setTotal(new BigDecimal("0.00"));
+        DefaultTableModel tableModel = new DefaultTableModel() {
 
-    //Session session;
-    //Transaction transaction;
-    public List<Tventadetalle> getVentasDetalle(Date desde, Date hasta, String usuario, String categoria) {
-        Session session1 = HibernateUtil.getSessionFactory().openSession();
-        session1.beginTransaction();
-        List<Tventadetalle> ventas = null;
-       
-            System.out.println("lista total ventas ..............................");
-
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
-            String i = df.format(desde);
-            String f = df.format(hasta);
-
-            String hql = " from Tventadetalle t where t.tventa.fechaRegistro >= '" + i + "00:00:00' AND t.tventa.fechaRegistro <= '" + f + "23:59:59'"
-                    + " AND t.tventa.usuario.nombre LIKE '%" + usuario + "%' AND t.imprimir = 1 AND t.tproducto.departamento.nombre LIKE '%" + categoria + "%' ORDER BY  t.tventa.fechaRegistro desc";
-            System.out.println("" + hql);
-            // Query query = session.createQuery(hql);
-            ventas = (List<Tventadetalle>) session1.createQuery(hql).list();
-            session1.getTransaction().commit();
-
-            for (Tventadetalle t : ventas) {
-                System.out.println("Codigo barras " + t.getCodigoBarrasProducto());
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
             }
-
-            System.out.println("lista total ventas .............................. FIN");
-
-        
-        return ventas;
-    }
-
-    public BigDecimal getVentas(Date desde, Date hasta, String usuario, String categoria) {
-        System.out.println("total ventas ..............................");
-        BigDecimal ventas = null;
+        };
         try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+            
+            System.out.println("mis ventas .........................................");
+
+            String[] columnNames = {"xID VENTA", "FECHA", "CODIGO", "NOMBRE", "DEPARTAMENTO", "CANTIDAD", "PRECIO", "PAGO CON","TOTAL"};
+            tableModel.setColumnIdentifiers(columnNames);
+
+           
+             Connection conexion = con.getConnection(); //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/puntoventa", "root", "Fedora12");
+            // Preparamos la consulta 
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
-            String i = df.format(desde);
-            String f = df.format(hasta);
-
-            String hql = "select sum(totalPrecioVenta) from Tventadetalle t where t.tventa.fechaRegistro >= '" + i + "00:00:00' AND t.tventa.fechaRegistro <= '" + f + "23:59:59'"
-                    + " AND t.tventa.usuario.nombre LIKE '%" + usuario + "%' AND t.imprimir = 1 AND t.tproducto.departamento.nombre LIKE '%" + categoria + "%' ORDER BY  t.tventa.fechaRegistro desc";
-
-            Query query = session.createQuery(hql);
-            System.out.println("Total " + ventas);
-            ventas = (BigDecimal) query.uniqueResult();
-            if (ventas == null) {
-                ventas = new java.math.BigDecimal("0.00");
+            String i = df.format(new Date());
+            String f = df.format(new Date());
+            Statement s = conexion.createStatement();
+            
+            String consultaSql = "select d.idVenta,v.fechaRegistro, d.codigoBarrasProducto, d.nombreProducto, dep.nombre, d.cantidad, d.precioventaUnitarioProducto,v.pago, d.totalprecioventa, v.precioProveedor  from tventadetalle d inner join tventa v  on v.idventa = d.idventa inner join tproducto p on p.idproducto = d.idproducto inner join departamento dep on p.categoria_id = dep.id inner join usuario u on u.id = v.usuario_id  where u.nombre = '" + nombre + "' and v.fecharegistro >='" + i + " 00:00:00' and v.fecharegistro <='" + f + " 23:59:59' and d.imprimir = 1 ORDER BY v.fechaRegistro desc";
+            System.out.println("sentencia " + consultaSql);
+            ResultSet rs = s.executeQuery(consultaSql);
+            // Recorremos el resultado, mientras haya registros para leer, y escribimos el resultado en pantalla. 
+           
+            Object[] fila = new Object[tableModel.getColumnCount()];
+            while (rs.next()) {
+                fila[0] = "" + rs.getInt(1);
+                fila[1] = "" + rs.getString(2);
+                fila[2] = "" + rs.getString(3);
+                fila[3] = "" + rs.getString(4);
+                fila[4] = "" + rs.getString(5);
+                fila[5] = "" + rs.getString(6);
+                fila[6] = "" + rs.getString(7);
+                fila[7] = "" + rs.getBigDecimal(8);
+                fila[8] = "" + rs.getBigDecimal(9);                
+                setTotal(getTotal().add(rs.getBigDecimal(9)));
+                System.out.println("suma total " + getTotal());
+                tableModel.addRow(fila);
             }
-            System.out.println("total ventas .............................. FIN");
-            // session.close();
-        } catch (Exception e) {
-            System.out.println("error total " + e);
-        } finally {
-            return ventas;
+            // Cerramos la conexion a la base de datos. 
+            conexion.close();
+        } catch (Exception ex) {
+            System.out.println("error " + ex);
+            // Logger.getLogger(ControladorInventario.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return tableModel;
+     }
+
+    /**
+     * @return the total
+     */
+    public BigDecimal getTotal() {
+        return total;
     }
 
-//    public void cerrar() {
-//        session.close();
-//    }
+    /**
+     * @param total the total to set
+     */
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
 }

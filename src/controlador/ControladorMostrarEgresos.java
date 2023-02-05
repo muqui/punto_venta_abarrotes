@@ -146,7 +146,8 @@ public class ControladorMostrarEgresos implements ActionListener {
             fechas.ayer = -1;
             jPanelReporteEgreso.jLabelEgreso.setText("Egresos del dia " + fechas.fecha(new Date()));
             listaEgreso = ingresoEgresoDao.getEgresos(new Date(), new Date());
-            jPanelReporteEgreso.jLabelTotal.setText("" + ingresoEgresoDao.getSumaEgresos(new Date(), new Date()));
+            //jPanelReporteEgreso.jLabelTotal.setText("" + ingresoEgresoDao.getSumaEgresos(new Date(), new Date()));
+            jPanelReporteEgreso.jLabelTotal.setText("" + ingresoEgresoDao.getTotalEgreso());
             jPanelReporteEgreso.jTableEgresos.setModel(llenarTablaIngreso());
             // ingresoEgresoDao.cerrar();
         } catch (Exception ex) {

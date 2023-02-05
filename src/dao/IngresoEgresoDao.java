@@ -4,25 +4,33 @@
  * and open the template in the editor.
  */
 package dao;
+
+import MYSQL.ConnectionMYSQLManager;
 import hibernate.HibernateUtil;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.swing.JOptionPane;
 import modelo.Egreso;
 import modelo.Ingreso;
 import modelo.Movimiento;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 /**
  *
  * @author mq12
  */
 
-    public class IngresoEgresoDao {
+public class IngresoEgresoDao {
 
+    ConnectionMYSQLManager con = new ConnectionMYSQLManager();
+    private BigDecimal totalEgreso;
     Session session;
     Transaction transaction;
 
@@ -30,7 +38,7 @@ import org.hibernate.Transaction;
         session = HibernateUtil.getSessionFactory().openSession();
         transaction = this.session.beginTransaction();
         session.save(movimiento);
-      
+
         transaction.commit();
         session.close();
     }
@@ -40,8 +48,8 @@ import org.hibernate.Transaction;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             transaction = this.session.beginTransaction();
-           
-           session.save(ingreso);
+
+            session.save(ingreso);
             transaction.commit();
             session.close();
         } catch (Exception e) {
@@ -66,13 +74,13 @@ import org.hibernate.Transaction;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             transaction = this.session.beginTransaction();
-          
+
             session.save(egreso);
             transaction.commit();
             session.close();
         } catch (Exception e) {
             bandera = false;
-            System.out.println("Error al crear egreso " +  e);
+            System.out.println("Error al crear egreso " + e);
         }
 
         return bandera;
@@ -111,21 +119,20 @@ import org.hibernate.Transaction;
         return ingresos;
     }
 
-    public List<Egreso> getEgresos(Date desde, Date hasta) throws Exception {
-        session = HibernateUtil.getSessionFactory().openSession();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
-        String i = df.format(desde);
-        String f = df.format(hasta);
-
-        String hql = " from Egreso where fecha >= '" + i + "' AND fecha <= '" + f + "'";
-        System.out.println("hql = " + hql);
-        Query query = session.createQuery(hql);
-
-        List<Egreso> egresos = (List<Egreso>) query.list();
-        session.close();
-        return egresos;
-    }
-
+//    public List<Egreso> getEgresos(Date desde, Date hasta) throws Exception {
+//        session = HibernateUtil.getSessionFactory().openSession();
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
+//        String i = df.format(desde);
+//        String f = df.format(hasta);
+//
+//        String hql = " from Egreso where fecha >= '" + i + "' AND fecha <= '" + f + "'";
+//        System.out.println("hql = " + hql);
+//        Query query = session.createQuery(hql);
+//
+//        List<Egreso> egresos = (List<Egreso>) query.list();
+//        session.close();
+//        return egresos;
+//    }
     public BigDecimal getSumaEgresos(Date desde, Date hasta) throws Exception {
         session = HibernateUtil.getSessionFactory().openSession();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
@@ -161,7 +168,6 @@ import org.hibernate.Transaction;
         session.close();
         return ingresos;
     }
-
     public BigDecimal getSumaIngresos(Date desde, Date hasta, String movimiento) throws Exception {
         session = HibernateUtil.getSessionFactory().openSession();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
@@ -214,7 +220,7 @@ import org.hibernate.Transaction;
     }
 
     public int borrarIngreso(String id) {
-         int r = 0;
+        int r = 0;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
         String i = df.format(new Date());
         session = HibernateUtil.getSessionFactory().openSession();
@@ -229,5 +235,45 @@ import org.hibernate.Transaction;
         System.out.println("exito!!!!!!!!!!!!!!!!!!!!!! ??????????????????????????????????????????????????????????? " + r);
         return r;
     }
-}
 
+    //CAMBIOS A BASE DE DATOS SIN APOYO
+    public List<Egreso> getEgresos(Date desde, Date hasta) throws Exception {
+        totalEgreso = new BigDecimal("0.00");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
+        String i = df.format(desde);
+        String f = df.format(hasta);
+
+        List<Egreso> egresos = new ArrayList<>();
+        Connection conexion = con.getConnection(); //Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost/puntoventa", "root", "Fedora12");
+        Statement s = conexion.createStatement();
+        String consultaSql = " select * from Egreso where fecha >= '" + i + "' AND fecha <= '" + f + "'";
+        System.out.println("Consulta Egresos " + consultaSql);
+        ResultSet rs = s.executeQuery(consultaSql);
+
+        while (rs.next()) {
+
+            Egreso egreso = new Egreso();
+            //  fila[0] = "" + rs.getInt(1);
+
+            egreso.setId(rs.getInt(1));
+            egreso.setFecha(rs.getDate(7));
+            egreso.setNombre(rs.getString(6));
+            egreso.setDescripcion(rs.getString(3));
+            egreso.setCantidad(rs.getBigDecimal(2));
+            totalEgreso = getTotalEgreso().add(egreso.getCantidad());
+            egresos.add(egreso);
+        }
+        // Cerramos la conexion a la base de datos. 
+        conexion.close();
+
+        return egresos;
+    }
+
+    /**
+     * @return the totalEgreso
+     */
+    public BigDecimal getTotalEgreso() {
+        return totalEgreso;
+    }
+
+}

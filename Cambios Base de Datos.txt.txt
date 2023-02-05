@@ -11,3 +11,7 @@ update tproducto set habilitado = 1;
 Agregar columna a tabla tventas con cuanato pago.
 
 ALTER TABLE tventa ADD COLUMN pago varchar(50);
+
+
+// Habilitar todos los productos
+update  tproducto set habilitado = 1 ;

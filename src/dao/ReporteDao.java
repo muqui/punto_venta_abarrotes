@@ -5,6 +5,7 @@
  */
 package dao;
 
+import MYSQL.ConnectionMYSQLManager;
 import hibernate.HibernateUtil;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -33,7 +34,7 @@ public class ReporteDao {
 
     Session session;
     Transaction transaction;
-
+    ConnectionMYSQLManager con = new ConnectionMYSQLManager();
     public List<Departamento> getDepartamento() throws Exception {
         session = HibernateUtil.getSessionFactory().openSession();
         String hql = "from Departamento ";
@@ -65,20 +66,20 @@ public class ReporteDao {
         };
 
         try {
-            Properties prop = new Properties();
+           // Properties prop = new Properties();
            // InputStream input = getClass().getClassLoader().getResourceAsStream("hibernate.properties");
-            InputStream input = new FileInputStream("hibernate.properties");
-            prop.load(input);
-            String clase = prop.getProperty("hibernate.connection.driver_class");
-            Class.forName(clase);
-            String[] columnNames = {"ID VENTA", "FECHA", "CODIGO", "NOMBRE", "DEPARTAMENTO", "USUARIO", "CANTIDAD", "PRECIO", "COSTO TOTAL PROVEEDOR","PAGO CON", "TOTAL"};
+           // InputStream input = new FileInputStream("hibernate.properties");
+          //  prop.load(input);
+          //  String clase = prop.getProperty("hibernate.connection.driver_class");
+         //   Class.forName(clase);
+            String[] columnNames = {"xID VENTA", "FECHA", "CODIGO", "NOMBRE", "DEPARTAMENTO", "USUARIO", "CANTIDAD", "PRECIO", "COSTO TOTAL PROVEEDOR","PAGO CON", "TOTAL"};
             tableModel.setColumnIdentifiers(columnNames);
             Object[] fila = new Object[tableModel.getColumnCount()];
             // Establecemos la conexión con la base de datos. 
-            String url = prop.getProperty("hibernate.connection.url");
-            String user = prop.getProperty("hibernate.connection.username");
-            String password = prop.getProperty("hibernate.connection.password");
-            Connection conexion = DriverManager.getConnection(url, user, password);
+          //  String url = prop.getProperty("hibernate.connection.url");
+           // String user = prop.getProperty("hibernate.connection.username");
+           // String password = prop.getProperty("hibernate.connection.password");
+            Connection conexion = con.getConnection();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
             String i = df.format(desde);
             String f = df.format(hasta);
@@ -99,7 +100,7 @@ public class ReporteDao {
                 fila[8] = "" + rs.getString(9);
                 fila[9] = "" + rs.getBigDecimal(10);
                  fila[10] = "" + rs.getBigDecimal(11);
-                System.out.println("productos ............................................. " + rs.getInt(1));
+                System.out.println("productos ............................................. 05/03/2022 " + rs.getInt(1));
                 tableModel.addRow(fila);
             }
 
